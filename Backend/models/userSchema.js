@@ -72,21 +72,30 @@ const userSchema = new mongoose.Schema(
         trim: true,
       },
 
-      skills: [
-        {
-          type: String,
-          trim: true,
-          lowercase: true,
-          minlength: [1, "Skill cannot be empty"],
-          maxlength: [50, "Skill name too long"],
-          validate: {
+      skills: {
+        type: [String],
+        trim: true,
+        lowercase: true,
+        default: [], 
+        validate: [
+          {
             validator: function (value) {
-              return new Set(value).size === value.length;
+              if (!value || value.length === 0) return true;
+              const lowerSkills = value.map((v) => v.trim().toLowerCase());
+              return new Set(lowerSkills).size === value.length;
             },
             message: "Duplicate skills are not allowed",
           },
-        },
-      ],
+        
+          {
+            validator: function (value) {
+              if (!value || value.length === 0) return true;
+              return value.every((v) => v.length >= 1 && v.length <= 50);
+            },
+            message: "Each skill must be between 1 and 50 characters",
+          },
+        ],
+      },
 
       experience: [
         {
@@ -240,6 +249,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = new mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;
