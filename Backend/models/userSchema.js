@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs"
 
 const userSchema = new mongoose.Schema(
   {
@@ -34,6 +35,17 @@ const userSchema = new mongoose.Schema(
       match: [
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         "Please fill a valid email address",
+      ],
+    },
+
+    phoneNumber: {
+      type: String,
+      required: [true, "Phone number is required"],
+      unique: true,
+      trim: true,
+      match: [
+        /^[6-9]\d{9}$/,
+        "Please enter a valid 10-digit Indian phone number",
       ],
     },
 
@@ -76,7 +88,7 @@ const userSchema = new mongoose.Schema(
         type: [String],
         trim: true,
         lowercase: true,
-        default: [], 
+        default: [],
         validate: [
           {
             validator: function (value) {
@@ -86,7 +98,7 @@ const userSchema = new mongoose.Schema(
             },
             message: "Duplicate skills are not allowed",
           },
-        
+
           {
             validator: function (value) {
               if (!value || value.length === 0) return true;
@@ -248,6 +260,12 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async function(next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+})
 
 const User = mongoose.model("User", userSchema);
 
