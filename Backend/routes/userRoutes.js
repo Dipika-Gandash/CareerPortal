@@ -1,5 +1,6 @@
 import express from "express";
 import User from "../models/userSchema";
+import { isAuthenticated } from "../middlewares/authMiddleware";
 
 const userRouter = express.Router();
 
@@ -104,3 +105,16 @@ userRouter.post("/login", async (req, res) => {
     });
   }
 });
+
+userRouter.post("/logout", isAuthenticated, (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  })
+
+  return res.status(200).json({
+    success: true,
+    message: "Logged out successfully"
+  })
+})
