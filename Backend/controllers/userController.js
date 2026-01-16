@@ -171,15 +171,28 @@ export const updateUserProfile = async (req, res) => {
 
     if (updates.profile) {
       if (updates.profile.skills !== undefined) {
+        let incomingSkills = updates.profile.skills;
+
+        if (!Array.isArray(incomingSkills)) {
+          incomingSkills = [incomingSkills];
+        }
         if (!Array.isArray(updates.profile.skills)) {
           updates.profile.skills = [updates.profile.skills];
         }
+
+        incomingSkills = incomingSkills
+          .map((skill) => skill.trim())
+          .filter(Boolean);
+
+        const existingSkills = user.profile.skills || [];
+        user.profile.skills = [
+          ...new Set([...existingSkills, ...incomingSkills]),
+        ];
       }
 
       const ALLOWED_PROFILE_FIELDS = [
         "bio",
         "gender",
-        "skills",
         "resume",
         "resumeOriginalName",
         "profilePhoto",
