@@ -256,25 +256,32 @@ const userSchema = new mongoose.Schema(
             "Please enter a valid Leetcode profile URL",
           ],
         },
+        portfolio: {
+          type: String,
+          trim: true,
+          match: [
+            /^https?:\/\/([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/,
+            "Please enter a valid portfolio website URL",
+          ],
+        },
       },
     },
   },
   { timestamps: true }
 );
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
   this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
 userSchema.methods.validatePassword = async function (userPassword) {
   return await bcrypt.compare(userPassword, this.password);
 };
 
-userSchema.methods.getJWT = async function () {
+userSchema.methods.getJWT = function () {
   const token = jwt.sign(
-    { id: this._id, email : this.email, role: this.role },
+    { id: this._id, email: this.email, role: this.role },
     process.env.JWT_SECRET_KEY,
     {
       expiresIn: "7d",
