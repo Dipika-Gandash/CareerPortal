@@ -283,3 +283,38 @@ export const addNewExperience = async (req, res) => {
     })
   }
 }
+
+export const addNewEducation = async (req, res) => {
+  try{
+    const {degree, institute, startYear, endYear} = req.body;
+    if(!degree || !institute || !startYear || !endYear){
+      return res.status(400).json({
+        success: false,
+        message: "Degree, Institute, Start Year and End Year are required fields"
+      })
+    }
+
+    const user = req.user;
+    const newEducation = {
+      degree,
+      institute,
+      startYear,
+      endYear
+    }
+
+    user.profile.education.push(newEducation);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Education added successfully",
+      education: user.profile.education
+    })
+
+  } catch(error) {
+    return res.status(500).json({
+     success: false,
+      message: error.message
+    })
+  }
+}
