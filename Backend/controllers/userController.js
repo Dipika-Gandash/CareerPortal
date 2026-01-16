@@ -240,3 +240,46 @@ export const updateUserProfile = async (req, res) => {
     });
   }
 };
+
+export const addNewExperience = async (req, res) => {
+  try {
+    const {jobTitle, company, employmentType, startDate, endDate, description} = req.body;
+    if(!jobTitle || !company || !employmentType || !startDate){
+      return res.status(400).json({
+        success: false,
+        message: "Title, Company, Employment Type and Start Date are required fields"
+      })
+    }
+    const user = req.user;
+    const newExperience = {
+     jobTitle,
+      company,
+      employmentType,
+      startDate,
+      description
+    }
+
+    if(endDate){
+      newExperience.endDate = endDate;
+      newExperience.isCurrent = false;
+    }
+    else{
+      newExperience.isCurrent = true
+    }
+
+    user.profile.experience.push(newExperience);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Experience added successfully",
+      experience: user.profile.experience
+    })
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
