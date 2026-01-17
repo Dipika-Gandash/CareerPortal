@@ -1,17 +1,27 @@
 import { Router } from "express";
-import { registerUser, loginUser, logoutUser, getUserProfile, updateUserProfile , addNewExperience, addNewEducation, updateUserExperience , updateUserEducation} from "../controllers/userController.js";
+import { registerUser, loginUser, logoutUser, getUserProfile, updateUserProfile , addNewExperience, addNewEducation, updateUserExperience , updateUserEducation, deleteUserExperience, deleteUserEducation} from "../controllers/userController.js";
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
 
 const userRouter = Router();
 
+// auth
 userRouter.post("/register", registerUser);
 userRouter.post("/login", loginUser);
-userRouter.get("/profile", isAuthenticated, getUserProfile);
-userRouter.patch("/profile/update", isAuthenticated, updateUserProfile);
-userRouter.post("/profile/update/experience", isAuthenticated, addNewExperience);
-userRouter.post("/profile/update/education", isAuthenticated, addNewEducation);
-userRouter.patch("/profile/update/experience/:expId", isAuthenticated, updateUserExperience);
-userRouter.patch("/profile/update/education/:eduId", isAuthenticated, updateUserEducation);
 userRouter.post("/logout", isAuthenticated, logoutUser);
+
+// profile
+userRouter.get("/profile", isAuthenticated, getUserProfile);
+userRouter.patch("/profile", isAuthenticated, updateUserProfile);
+
+// profile - experience
+userRouter.post("/profile/experience", isAuthenticated, addNewExperience);
+userRouter.patch("/profile/experience/:expId", isAuthenticated, updateUserExperience);
+userRouter.delete("/profile/experience/:expId", isAuthenticated, deleteUserExperience);
+
+// profile - education
+userRouter.post("/profile/education", isAuthenticated, addNewEducation);
+userRouter.patch("/profile/education/:eduId", isAuthenticated, updateUserEducation);
+userRouter.delete("/profile/education/:eduId", isAuthenticated, deleteUserEducation);
+
 
 export default userRouter;

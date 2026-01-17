@@ -243,28 +243,35 @@ export const updateUserProfile = async (req, res) => {
 
 export const addNewExperience = async (req, res) => {
   try {
-    const {jobTitle, company, employmentType, startDate, endDate, description} = req.body;
-    if(!jobTitle || !company || !employmentType || !startDate){
-      return res.status(400).json({
-        success: false,
-        message: "Title, Company, Employment Type and Start Date are required fields"
-      })
-    }
-    const user = req.user;
-    const newExperience = {
-     jobTitle,
+    const {
+      jobTitle,
       company,
       employmentType,
       startDate,
-      description
+      endDate,
+      description,
+    } = req.body;
+    if (!jobTitle || !company || !employmentType || !startDate) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Title, Company, Employment Type and Start Date are required fields",
+      });
     }
+    const user = req.user;
+    const newExperience = {
+      jobTitle,
+      company,
+      employmentType,
+      startDate,
+      description,
+    };
 
-    if(endDate){
+    if (endDate) {
       newExperience.endDate = endDate;
       newExperience.isCurrent = false;
-    }
-    else{
-      newExperience.isCurrent = true
+    } else {
+      newExperience.isCurrent = true;
     }
 
     user.profile.experience.push(newExperience);
@@ -273,25 +280,25 @@ export const addNewExperience = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Experience added successfully",
-      experience: user.profile.experience
-    })
-
+      experience: user.profile.experience,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 export const addNewEducation = async (req, res) => {
-  try{
-    const {degree, institute, startYear, endYear} = req.body;
-    if(!degree || !institute || !startYear || !endYear){
+  try {
+    const { degree, institute, startYear, endYear } = req.body;
+    if (!degree || !institute || !startYear || !endYear) {
       return res.status(400).json({
         success: false,
-        message: "Degree, Institute, Start Year and End Year are required fields"
-      })
+        message:
+          "Degree, Institute, Start Year and End Year are required fields",
+      });
     }
 
     const user = req.user;
@@ -299,8 +306,8 @@ export const addNewEducation = async (req, res) => {
       degree,
       institute,
       startYear,
-      endYear
-    }
+      endYear,
+    };
 
     user.profile.education.push(newEducation);
     await user.save();
@@ -308,16 +315,15 @@ export const addNewEducation = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Education added successfully",
-      education: user.profile.education
-    })
-
-  } catch(error) {
+      education: user.profile.education,
+    });
+  } catch (error) {
     return res.status(500).json({
-     success: false,
-      message: error.message
-    })
+      success: false,
+      message: error.message,
+    });
   }
-} 
+};
 
 export const updateUserExperience = async (req, res) => {
   try {
@@ -326,21 +332,27 @@ export const updateUserExperience = async (req, res) => {
     const user = req.user;
 
     const experience = user.profile.experience.id(expId);
-    if(!experience) {
+    if (!experience) {
       return res.status(404).json({
         success: false,
-        message: "Experience not found"
-      })
+        message: "Experience not found",
+      });
     }
 
-    const fields = ['jobTitle', 'company', 'employmentType', 'startDate', 'description'];
+    const fields = [
+      "jobTitle",
+      "company",
+      "employmentType",
+      "startDate",
+      "description",
+    ];
     fields.forEach((field) => {
-      if(updates[field] !== undefined){
+      if (updates[field] !== undefined) {
         experience[field] = updates[field];
       }
-    })
+    });
 
-    if(updates.hasOwnProperty('endDate')){
+    if (updates.hasOwnProperty("endDate")) {
       experience.endDate = updates.endDate || null;
       experience.isCurrent = !updates.endDate;
     }
@@ -350,50 +362,106 @@ export const updateUserExperience = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Experience updated successfully",
-      experience: experience
-    })
-
+      experience: experience,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 export const updateUserEducation = async (req, res) => {
   try {
     const updates = req.body;
     const eduId = req.params.eduId;
-    const user = req.user
+    const user = req.user;
 
     const education = user.profile.education.id(eduId);
 
-    if(!education){
+    if (!education) {
       return res.status(404).json({
         success: false,
-        message: "Education not found"
-      })
+        message: "Education not found",
+      });
     }
 
-    const fields = ['degree', 'institute', 'startYear', 'endYear'];
+    const fields = ["degree", "institute", "startYear", "endYear"];
     fields.forEach((field) => {
-      if(updates[field] !== undefined){
+      if (updates[field] !== undefined) {
         education[field] = updates[field];
       }
-    })
+    });
 
     await user.save();
     return res.status(200).json({
       success: true,
       message: "Education updated successfully",
-      education: education
-    })
-
+      education: education,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
+
+export const deleteUserExperience = async (req, res) => {
+  try {
+    const expId = req.params.expId;
+    const user = req.user;
+
+    const experience = user.profile.experience.id(expId);
+
+    if (!experience) {
+      return res.status(404).json({
+        success: false,
+        message: "Experience not found",
+      });
+    }
+
+    user.profile.experience.pull(expId);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Experience deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteUserEducation = async (req, res) => {
+  try {
+    const eduId = req.params.eduId;
+    const user = req.user;
+
+    const education = user.profile.education.id(eduId);
+    if (!education) {
+      return res.status(404).json({
+        success: false,
+        message: "Education not found",
+      });
+    }
+
+    user.profile.education.pull(eduId);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Education deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+
+};
