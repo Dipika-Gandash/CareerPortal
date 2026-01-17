@@ -143,9 +143,6 @@ const userSchema = new mongoose.Schema(
           },
           endDate: {
             type: Date,
-            required: function () {
-              return !this.isCurrent;
-            },
             validate: {
               validator: function (value) {
                 if (!value) return true;
