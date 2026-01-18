@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const companySchema = mongoose.Schema({
   name: {
     type: String,
+    unique: true,
     required: [true, "Company name is required"],
     trim: true,
     minlength: [3, "Company name must be at least 3 characters"],

@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
 import connectToDatabase from './utils/database.js';
-import userRouter from './routes/userRoute.js';
+import userRouter from './routes/userRoutes.js';
+import companyRouter from './routes/companyRoutes.js';
 
 dotenv.config();
 
@@ -13,7 +14,8 @@ app.use(express.urlencoded({extended: true}))
 app.use(cookieParser());
 
 
-app.use("/api/user", userRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/company", companyRouter);
 
 const startServer = async () => {
     try {
