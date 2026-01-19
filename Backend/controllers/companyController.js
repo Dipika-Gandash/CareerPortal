@@ -1,5 +1,10 @@
 import Company from "../models/companySchema.js";
 import mongoose from "mongoose";
+import { escapeRegex } from "../utils/escapeRegex.js";
+import {
+  normalizeCompanyName,
+  normalizeLocations
+} from "../utils/company.utils.js";
 
 export const createCompany = async (req, res) => {
   try {
@@ -12,11 +17,14 @@ export const createCompany = async (req, res) => {
       });
     }
 
-    const escapeRegex = (text) => {
-      return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    };
+    const normalizedName = normalizeCompanyName(name);
+    if (!normalizedName) {
+      return res.status(400).json({
+        success: false,
+        message: "Company name is required",
+      });
+    }
 
-    const normalizedName = name.trim();
     const safeName = escapeRegex(normalizedName);
 
     const existingCompany = await Company.findOne({
@@ -29,27 +37,7 @@ export const createCompany = async (req, res) => {
       });
     }
 
-    if (!Array.isArray(location)) {
-      return res.status(400).json({
-        success: false,
-        message: "Location must be an array of strings",
-      });
-    }
-
-    const normalizedLocations = [
-      ...new Set(
-        location
-          .map((loc) => loc.trim().toLowerCase())
-          .filter((loc) => loc.length >= 2 && loc.length <= 100),
-      ),
-    ];
-
-    if (normalizedLocations.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one valid location is required",
-      });
-    }
+    let normalizedLocations = normalizeLocations(location);
 
     const company = await Company.create({
       name: normalizedName,
@@ -69,8 +57,8 @@ export const createCompany = async (req, res) => {
         description: company.description,
         website: company.website,
         location: company.location,
-        logo: company.logo
-      }
+        logo: company.logo,
+      },
     });
   } catch (error) {
     return res.status(500).json({
@@ -81,30 +69,147 @@ export const createCompany = async (req, res) => {
 };
 
 export const getMyCompanies = async (req, res) => {
-    try {
-       const userId = req.user._id;
-       const companies = await  Company.find({createdBy: userId}).select("-__v -createdBy");
-       if(companies.length === 0) {
-        return res.status(200).json({
-          success: false,
-          message: "No companies created yet"
-        })
-       }
-
-       return res.status(200).json({
-        success: true,
-        message: "Companies created by you",
-        companies
-       })
-    } catch (error) {
-      return res.status(500).json({
+  try {
+    const userId = req.user._id;
+    const companies = await Company.find({ createdBy: userId }).select(
+      "-__v -createdBy",
+    );
+    if (companies.length === 0) {
+      return res.status(200).json({
         success: false,
-        message: error.message
-      })
+        message: "No companies created yet",
+      });
     }
-}
+
+    return res.status(200).json({
+      success: true,
+      message: "Companies created by you",
+      companies,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 export const getCompanyById = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const companyId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(companyId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid company Id",
+      });
+    }
+
+    const company = await Company.findOne({
+      _id: companyId,
+      createdBy: userId,
+    });
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "No company found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Company fetched successfully",
+      company,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const updateCompany = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const companyId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(companyId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid company Id",
+      });
+    }
+
+    const company = await Company.findOne({
+      _id: companyId,
+      createdBy: userId,
+    });
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "No company found",
+      });
+    }
+
+    const { name, description, website, location, logo } = req.body;
+
+    if (name) {
+      const normalizedName = normalizeCompanyName(name);
+      if (!normalizedName) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid company name",
+        });
+      }
+
+      const safeName = escapeRegex(normalizedName);
+
+      const existingCompany = await Company.findOne({
+        name: { $regex: `^${safeName}$`, $options: "i" },
+      });
+      if (existingCompany) {
+        return res.status(409).json({
+          success: false,
+          message: "Company with this name already exists",
+        });
+      }
+    }
+
+    if (description) company.description = description;
+    if (website) company.website = website;
+    if (location) {
+      try {
+        const incomingLocations = location;
+        const mergedLocations = [...company.location , ...incomingLocations];
+        company.location = normalizeLocations(mergedLocations);
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          message: err.message,
+        });
+      }
+    }
+
+    if (logo) company.logo = logo;
+    await company.save();
+    return res.status(200).json({
+      success: true,
+      message: "Company updated successfully",
+      company,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const deleteCompany = async (req, res) => {
   try {
     const userId = req.user._id;
     const companyId = req.params.id;
@@ -116,7 +221,7 @@ export const getCompanyById = async (req, res) => {
       })
     }
 
-    const company = await Company.findOne({
+    const company = await Company.findOneAndDelete({
       _id: companyId,
       createdBy: userId
     })
@@ -130,8 +235,7 @@ export const getCompanyById = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Company fetched successfully",
-      company
+      message: "Company deleted successfully"
     })
   } catch (error) {
     return res.status(500).json({
