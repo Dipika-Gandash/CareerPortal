@@ -78,3 +78,27 @@ export const createCompany = async (req, res) => {
     });
   }
 };
+
+export const getMyCompanies = async (req, res) => {
+    try {
+       const user = req.user._id;
+       const companies = await  Company.find({createdBy: user}).select("-__v -createdBy");;
+       if(companies.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No companies created yet"
+        })
+       }
+
+       return res.status(200).json({
+        success: true,
+        message: "Companies created by you",
+        companies: companies
+       })
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: error.message
+      })
+    }
+}
