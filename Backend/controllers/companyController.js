@@ -1,4 +1,5 @@
 import Company from "../models/companySchema.js";
+import mongoose from "mongoose";
 
 export const createCompany = async (req, res) => {
   try {
@@ -81,10 +82,10 @@ export const createCompany = async (req, res) => {
 
 export const getMyCompanies = async (req, res) => {
     try {
-       const user = req.user._id;
-       const companies = await  Company.find({createdBy: user}).select("-__v -createdBy");;
+       const userId = req.user._id;
+       const companies = await  Company.find({createdBy: userId}).select("-__v -createdBy");
        if(companies.length === 0) {
-        return res.status(404).json({
+        return res.status(200).json({
           success: false,
           message: "No companies created yet"
         })
@@ -93,7 +94,7 @@ export const getMyCompanies = async (req, res) => {
        return res.status(200).json({
         success: true,
         message: "Companies created by you",
-        companies: companies
+        companies
        })
     } catch (error) {
       return res.status(500).json({
@@ -101,4 +102,41 @@ export const getMyCompanies = async (req, res) => {
         message: error.message
       })
     }
+}
+
+export const getCompanyById = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const companyId = req.params.id;
+
+    if(!mongoose.Types.ObjectId.isValid(companyId)){
+      return res.status(400).json({
+        success: false,
+        message: "Invalid company Id"
+      })
+    }
+
+    const company = await Company.findOne({
+      _id: companyId,
+      createdBy: userId
+    })
+
+    if(!company) {
+      return res.status(404).json({
+        success: false,
+        message: "No company found"
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Company fetched successfully",
+      company
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
 }
