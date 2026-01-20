@@ -297,13 +297,6 @@ export const updateUserExperience = async (req, res) => {
     const expId = req.params.expId;
     const user = req.user;
 
-     if (!mongoose.Types.ObjectId.isValid(expId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid experience id",
-      });
-    }
-
     const experience = user.profile.experience.id(expId);
     if (!experience) {
       return res.status(404).json({
@@ -349,13 +342,6 @@ export const deleteUserExperience = async (req, res) => {
   try {
     const expId = req.params.expId;
     const user = req.user;
-
-     if (!mongoose.Types.ObjectId.isValid(expId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid experience id",
-      });
-    }
 
     const experience = user.profile.experience.id(expId);
 
@@ -422,13 +408,6 @@ export const updateUserEducation = async (req, res) => {
     const eduId = req.params.eduId;
     const user = req.user;
 
-     if (!mongoose.Types.ObjectId.isValid(eduId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid education id",
-      });
-    }
-
     const education = user.profile.education.id(eduId);
 
     if (!education) {
@@ -463,13 +442,6 @@ export const deleteUserEducation = async (req, res) => {
   try {
     const eduId = req.params.eduId;
     const user = req.user;
-
-     if (!mongoose.Types.ObjectId.isValid(eduId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid education id",
-      });
-    }
 
     const education = user.profile.education.id(eduId);
     if (!education) {

@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import connectToDatabase from './utils/database.js';
 import userRouter from './routes/userRoutes.js';
 import companyRouter from './routes/companyRoutes.js';
+import jobRouter from './routes/jobRoutes.js';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/company", companyRouter);
+app.use("/api/v1/job", jobRouter);
 
 const startServer = async () => {
     try {

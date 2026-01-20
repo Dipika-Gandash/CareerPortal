@@ -24,45 +24,76 @@ const jobSchema = new mongoose.Schema(
 
     requirements: {
       type: [String],
-      required: [true, "Job requirements are required"],
-      validate: [
-        {
-          validator: function (value) {
-            return Array.isArray(value) && value.length > 0;
-          },
-          message: "At least one requirement is required",
+      required: true,
+      validate: {
+        validator: function (value) {
+          return (
+            Array.isArray(value) &&
+            value.length > 0 &&
+            value.every(
+              (skill) =>
+                typeof skill === "string" &&
+                skill.trim().length >= 2 &&
+                skill.trim().length <= 50,
+            )
+          );
         },
-        {
-          validator: function (value) {
-            const skills = value.map((s) => s.trim().toLowerCase());
-            return new Set(skills).size === value.length;
-          },
-          message: "Duplicate requirements are not allowed",
-        },
-      ],
-      default: [],
+        message:
+          "Each requirement must be a string between 2 and 50 characters",
+      },
+    },
+
+    experienceLevel: {
+      type: String,
+      enum: {
+        values: ["Fresher", "Junior", "Mid", "Senior"],
+        message: "Not a valid experience level",
+      },
+      required: [true, "Experience level is required"],
     },
 
     salary: {
-      type: Number,
-      min: [0, "Salary cannot be negative"],
+      min: {
+        type: Number,
+        required: [true, "Minimum salary is required"],
+        min: [0, "Minimum salary cannot be negative"],
+      },
+      max: {
+        type: Number,
+        required: [true, "Maximum salary is required"],
+        min: [0, "Maximum salary cannot be negative"],
+        max: [10000000, "Maximum salary is too high"],
+      },
+      currency: {
+        type: String,
+        enum: {
+          values: ["USD", "EUR", "GBP", "INR", "JPY", "CNY"],
+          message: "Not a valid currency",
+        },
+        default: "INR",
+      },
     },
 
     location: {
       type: String,
-      required: [true, "Location is required"],
       trim: true,
       minlength: [2, "Location must be at least 2 characters"],
       maxlength: [100, "Location cannot exceed 100 characters"],
     },
 
+    workMode: {
+      type: String,
+      enum: ["Onsite", "Remote", "Hybrid"],
+      default: "Onsite",
+    },
+
     jobType: {
       type: String,
       enum: {
-        values: ["Full-Time", "Part-Time", "Internship", "Remote", "Contract"],
+        values: ["Full-Time", "Part-Time", "Internship", "Contract"],
         message: "Not a valid job-type",
       },
-      default: "Full-Time",
+      required: [true, "Job type is required"],
     },
 
     positions: {
@@ -76,30 +107,41 @@ const jobSchema = new mongoose.Schema(
       default: 1,
     },
 
-    company : {
-     type: mongoose.Schema.Types.ObjectId,
+    status: {
+      type: String,
+      enum: {
+        values: ["Open", "Closed"],
+        message: "Not a valid status",
+      },
+      default: "Open",
+    },
+
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Company",
-    required: [true, "Job must be linked to a company"]
+      required: [true, "Job must be linked to a company"],
     },
 
     postedBy: {
-      type : mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
-    }
+      required: true,
+    },
   },
 
-  { timestamps: true }
+  { timestamps: true },
 );
 
-jobSchema.path("requirements").validate(function (value) {
-  return value.every(
-    (skill) =>
-      typeof skill === "string" &&
-      skill.trim().length >= 2 &&
-      skill.trim().length <= 50
-  );
-}, "Each requirement must be between 2 and 50 characters");
+jobSchema.pre("validate", function () {
+  if (this.salary?.min > this.salary?.max) {
+    this.invalidate(
+      "salary.max",
+      "Max salary must be greater than min salary"
+    );
+  }
+});
+
+jobSchema.index({ title: "text", description: "text" });
 
 const Job = mongoose.model("Job", jobSchema);
 

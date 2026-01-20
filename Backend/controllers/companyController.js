@@ -97,14 +97,7 @@ export const getMyCompanies = async (req, res) => {
 export const getCompanyById = async (req, res) => {
   try {
     const userId = req.user._id;
-    const companyId = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(companyId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid company Id",
-      });
-    }
+    const companyId = req.params.companyId;
 
     const company = await Company.findOne({
       _id: companyId,
@@ -134,14 +127,7 @@ export const getCompanyById = async (req, res) => {
 export const updateCompany = async (req, res) => {
   try {
     const userId = req.user._id;
-    const companyId = req.params.id;
-
-    if (!mongoose.Types.ObjectId.isValid(companyId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid company Id",
-      });
-    }
+    const companyId = req.params.companyId;
 
     const company = await Company.findOne({
       _id: companyId,
@@ -212,14 +198,7 @@ export const updateCompany = async (req, res) => {
 export const deleteCompany = async (req, res) => {
   try {
     const userId = req.user._id;
-    const companyId = req.params.id;
-
-    if(!mongoose.Types.ObjectId.isValid(companyId)){
-      return res.status(400).json({
-        success: false,
-        message: "Invalid company Id"
-      })
-    }
+    const companyId = req.params.companyId;
 
     const company = await Company.findOneAndDelete({
       _id: companyId,
