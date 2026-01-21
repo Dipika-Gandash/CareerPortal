@@ -34,7 +34,7 @@ const jobSchema = new mongoose.Schema(
               (skill) =>
                 typeof skill === "string" &&
                 skill.trim().length >= 2 &&
-                skill.trim().length <= 50,
+                skill.trim().length <= 100,
             )
           );
         },

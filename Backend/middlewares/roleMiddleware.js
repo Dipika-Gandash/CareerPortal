@@ -16,4 +16,15 @@ export const isAdmin = (req, res, next) => {
             message: "Access denied, admins only"
         })
     }
+    next();
+}
+
+export const isJobSeeker = (req, res, next) => {
+    if(req.user.role !== 'jobseeker'){
+        return res.status(403).json({
+            success: false,
+            message: "Access denied, jobseeker only"
+        })
+    }
+    next();
 }
