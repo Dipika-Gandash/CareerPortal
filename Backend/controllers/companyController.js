@@ -5,6 +5,7 @@ import {
   normalizeCompanyName,
   normalizeLocations
 } from "../utils/company.utils.js";
+import Job from "../models/jobSchema.js";
 
 export const createCompany = async (req, res) => {
   try {
@@ -76,7 +77,7 @@ export const getMyCompanies = async (req, res) => {
     );
     if (companies.length === 0) {
       return res.status(200).json({
-        success: false,
+        success: true,
         message: "No companies created yet",
       });
     }
@@ -197,12 +198,12 @@ export const updateCompany = async (req, res) => {
 
 export const deleteCompany = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const recruiterId = req.user._id;
     const companyId = req.params.companyId;
 
-    const company = await Company.findOneAndDelete({
+    const company = await Company.findOne({
       _id: companyId,
-      createdBy: userId
+      createdBy: recruiterId
     })
 
     if(!company) {
@@ -212,6 +213,13 @@ export const deleteCompany = async (req, res) => {
       })
     }
 
+    await Job.deleteMany({
+      company: companyId,
+      postedBy: recruiterId
+    })
+
+    await company.deleteOne();
+    
     return res.status(200).json({
       success: true,
       message: "Company deleted successfully"

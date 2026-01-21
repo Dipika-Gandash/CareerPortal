@@ -215,3 +215,76 @@ export const getRecruiterJobs = async (req, res) => {
     });
   }
 };
+
+export const updateJobStatus = async (req, res) => {
+  try {
+    const { jobId } = req.params;
+    const { status }= req.body;
+    const recruiterId = req.user._id;
+
+    const ALLOWED_STATUS = ["Open", "Closed"];
+
+    if (!ALLOWED_STATUS.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Status must be either open or closed",
+      });
+    }
+
+    const job = await Job.findOne({
+      _id: jobId,
+      postedBy: recruiterId,
+    });
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found or unauthorized",
+      });
+    }
+
+   job.status = status;
+    await job.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Job status updated successfully",
+      job,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating job status",
+    });
+  }
+};
+
+export const deleteJob = async (req, res) => {
+  try {
+    const {jobId} = req.params;
+    const recruiterId = req.user._id;
+    
+    const result = await Job.deleteOne({
+      _id: jobId,
+      postedBy: recruiterId
+    })
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found or unauthorized",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Job deleted successfully"
+    })
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while deleting the job"
+    })
+  }
+}
