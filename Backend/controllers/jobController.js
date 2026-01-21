@@ -166,3 +166,29 @@ export const getAllJobs = async (req, res) => {
     });
   }
 };
+
+export const getJobById = async (req, res) => {
+  try {
+
+    const jobId = req.params.jobId;
+
+    const job = await Job.findById(jobId).populate("company", "name location").populate("postedBy", "firstName lastName");
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      job,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+       message: "Something went wrong while fetching the job"
+    })
+  }
+}
