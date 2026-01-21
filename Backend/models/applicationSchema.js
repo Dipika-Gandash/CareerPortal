@@ -17,10 +17,10 @@ const applicationSchema = mongoose.Schema(
     status: {
       type: String,
       enum: {
-        values: ["applied", "shortlisted", "rejected", "hired"],
+        values: ["Applied", "Shortlisted", "Rejected", "Hired"],
         message: "Invalid status",
       },
-      default: "applied",
+      default: "Applied",
     },
 
     resume: {
