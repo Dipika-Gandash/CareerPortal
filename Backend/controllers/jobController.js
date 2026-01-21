@@ -50,7 +50,7 @@ export const createJob = async (req, res) => {
       requirements.length === 0 ||
       !salary ||
       salary.min === null ||
-      salary.max === null || 
+      salary.max === null ||
       salary.min > salary.max
     ) {
       return res.status(400).json({
@@ -98,6 +98,66 @@ export const createJob = async (req, res) => {
       success: true,
       message: "Job created successfully",
       job: newJob,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getAllJobs = async (req, res) => {
+  try {
+    const {
+      keyword,
+      location,
+      jobType,
+      workMode,
+      experienceLevel,
+      page = 1,
+      limit = 10
+    } = req.query;
+
+    const skip = (page - 1) * limit;
+
+    const filter = { status: "Open" };
+
+    if (keyword) {
+      filter.title = { $regex: keyword, $options: "i" };
+    }
+
+    if (location) {
+      filter.location = { $regex: location, $options: "i" };
+    }
+
+    if (jobType) {
+      filter.jobType = jobType;
+    }
+
+    if (workMode) {
+      filter.workMode = workMode;
+    }
+
+    if (experienceLevel) {
+      filter.experienceLevel = experienceLevel;
+    }
+
+    const jobs = await Job.find(filter)
+      .populate("company", "name location")
+      .populate("postedBy", "firstName lastName")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+      const totalJobs = await Job.countDocuments(filter);
+
+     return res.status(200).json({
+      success: true,
+      totalJobs,
+      currentPage: Number(page),
+      totalPages: Math.ceil(totalJobs / limit),
+      jobs,
     });
   } catch (error) {
     return res.status(500).json({
