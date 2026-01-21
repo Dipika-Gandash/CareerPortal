@@ -116,7 +116,7 @@ export const getAllJobs = async (req, res) => {
       workMode,
       experienceLevel,
       page = 1,
-      limit = 10
+      limit = 10,
     } = req.query;
 
     const skip = (page - 1) * limit;
@@ -150,9 +150,9 @@ export const getAllJobs = async (req, res) => {
       .skip(skip)
       .limit(parseInt(limit));
 
-      const totalJobs = await Job.countDocuments(filter);
+    const totalJobs = await Job.countDocuments(filter);
 
-     return res.status(200).json({
+    return res.status(200).json({
       success: true,
       totalJobs,
       currentPage: Number(page),
@@ -169,10 +169,11 @@ export const getAllJobs = async (req, res) => {
 
 export const getJobById = async (req, res) => {
   try {
-
     const jobId = req.params.jobId;
 
-    const job = await Job.findById(jobId).populate("company", "name location").populate("postedBy", "firstName lastName");
+    const job = await Job.findById(jobId)
+      .populate("company", "name location")
+      .populate("postedBy", "firstName lastName");
 
     if (!job) {
       return res.status(404).json({
@@ -188,7 +189,29 @@ export const getJobById = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-       message: "Something went wrong while fetching the job"
-    })
+      message: "Something went wrong while fetching the job",
+    });
   }
-}
+};
+
+export const getRecruiterJobs = async (req, res) => {
+  try {
+    const recruiterId = req.user._id;
+
+    const jobs = await Job.find({ postedBy: recruiterId })
+      .populate("company", "name location")
+      .populate("postedBy", "firstName lastName")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      totalJobs: jobs.length,
+      jobs,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching recruiter's jobs",
+    });
+  }
+};
