@@ -1,4 +1,6 @@
 import Company from "../models/companySchema.js";
+import { deleteJobWithApplications } from "../services/jobService.js";
+import Job from "../models/jobSchema.js";
 
 export const getAllCompanies = async (req, res) => {
   try {
@@ -11,20 +13,60 @@ export const getAllCompanies = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-      const totalCompanies = await Company.countDocuments();
+    const totalCompanies = await Company.countDocuments();
 
     return res.status(200).json({
       success: true,
       message: "Companies fetched successfully",
       totalCompanies,
       currentPage: page,
-      totalPages: Math.ceil(totalCompanies/limit),
+      totalPages: Math.ceil(totalCompanies / limit),
       companies,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Internal server error",
+    });
+  }
+};
+
+export const deleteCompany = async (req, res) => {
+  try {
+    const { companyId } = req.params;
+    const company = await Company.findById(companyId);
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found",
+      });
+    }
+
+    const jobs = await Job.find({
+      company: companyId,
+    }).select("_id");
+
+    const jobIds = jobs.map((job) => job._id);
+
+    await Application.deleteMany({
+      job: { $in: jobIds },
+    });
+    
+   await Job.deleteMany({
+      company: companyId,
+    });
+
+    await company.deleteOne();
+
+    return res.status(200).json({
+      success: true,
+      message: "Company and related jobs & applications deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
     });
   }
 };
