@@ -7,6 +7,7 @@ import userRouter from './routes/userRoutes.js';
 import companyRouter from './routes/companyRoutes.js';
 import jobRouter from './routes/jobRoutes.js';
 import applicationRouter from './routes/applicationRoutes.js';
+import adminRouter from './routes/adminRoutes.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/company", companyRouter);
 app.use("/api/v1/job", jobRouter);
 app.use("/api/v1/application", applicationRouter);
+app.use("/api/v1/admin", adminRouter);
 
 const startServer = async () => {
     try {
