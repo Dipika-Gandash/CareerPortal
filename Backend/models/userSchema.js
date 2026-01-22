@@ -263,6 +263,11 @@ const userSchema = new mongoose.Schema(
         },
       },
     },
+
+    isBlocked: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 );

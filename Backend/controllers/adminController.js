@@ -1,6 +1,6 @@
 import Company from "../models/companySchema.js";
-import { deleteJobWithApplications } from "../services/jobService.js";
 import Job from "../models/jobSchema.js";
+import User from "../models/userSchema.js";
 
 export const getAllCompaniesAdmin = async (req, res) => {
   try {
@@ -53,7 +53,7 @@ export const deleteCompanyAdmin = async (req, res) => {
       job: { $in: jobIds },
     });
 
-   await Job.deleteMany({
+    await Job.deleteMany({
       company: companyId,
     });
 
@@ -127,31 +127,95 @@ export const getAllJobsAdmin = async (req, res) => {
 };
 
 export const deleteJobAdmin = async (req, res) => {
-    try {
-        const { jobId } = req.params;
+  try {
+    const { jobId } = req.params;
 
-        const job = await Job.findById(jobId).select('_id');
-        if(!job){
-            return res.status(404).json({
-                status: false,
-                message: "Job not found"
-            })
-        }
-
-        await Application.deleteMany({
-            job: jobId
-        })
-
-        await job.deleteOne();
-        return res.status(200).json({
-            success: true,
-            message: "Job deleted successfully"
-        })
-
-    } catch(error) {
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server error"
-        })
+    const job = await Job.findById(jobId).select("_id");
+    if (!job) {
+      return res.status(404).json({
+        status: false,
+        message: "Job not found",
+      });
     }
-}
+
+    await Application.deleteMany({
+      job: jobId,
+    });
+
+    await job.deleteOne();
+    return res.status(200).json({
+      success: true,
+      message: "Job deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server error",
+    });
+  }
+};
+
+export const getRecruiters = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const recruiters = await User.find({ role: "recruiter" })
+      .select("firstName lastName email profile.bio")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const totalRecruiters = await User.countDocuments({ role: "recruiter" });
+
+    return res.status(200).json({
+      success: true,
+      totalRecruiters,
+      currentPage: page,
+      totalPages: Math.ceil(totalRecruiters / limit),
+      recruiters,
+    });
+  } catch (error) {
+    console.error("Get recruiters error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const updateRecruiterStatus = async (req, res) => {
+  try {
+    const { recruiterId } = req.params;
+
+    const recruiter = await User.findById(recruiterId);
+    if (!recruiter || recruiter.role !== "recruiter") {
+      return res.status(404).json({
+        success: false,
+        message: "Recruiter not found",
+      });
+    }
+
+    recruiter.isBlocked = !recruiter.isBlocked;
+    await recruiter.save();
+    return res.status(200).json({
+      success: true,
+      message: recruiter.isBlocked
+        ? "Recruiter has been blocked"
+        : "Recruiter has been unblocked",
+      recruiter: {
+        _id: recruiter._id,
+        firstName: recruiter.firstName,
+        lastName: recruiter.lastName,
+        email: recruiter.email,
+        isBlocked: recruiter.isBlocked,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
