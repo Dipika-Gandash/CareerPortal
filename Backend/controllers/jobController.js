@@ -1,5 +1,6 @@
 import Job from "../models/jobSchema.js";
 import Company from "../models/companySchema.js";
+import { deleteJobWithApplications } from "../services/jobService.js";
 
 export const createJob = async (req, res) => {
   try {
@@ -41,6 +42,9 @@ export const createJob = async (req, res) => {
       });
     }
 
+    const minSalary = Number(salary?.min);
+    const maxSalary = Number(salary?.max);
+
     if (
       !title ||
       !description ||
@@ -49,9 +53,9 @@ export const createJob = async (req, res) => {
       !Array.isArray(requirements) ||
       requirements.length === 0 ||
       !salary ||
-      salary.min === null ||
-      salary.max === null ||
-      salary.min > salary.max
+      isNaN(minSalary) ||
+      isNaN(maxSalary) ||
+      minSalary > maxSalary
     ) {
       return res.status(400).json({
         success: false,
@@ -66,13 +70,6 @@ export const createJob = async (req, res) => {
           .filter((req) => req.length > 0),
       ),
     ];
-    if (normalizedRequirements.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "At least one valid requirement must be provided",
-      });
-    }
-
     if (normalizedRequirements.length === 0) {
       return res.status(400).json({
         success: false,
@@ -219,7 +216,7 @@ export const getRecruiterJobs = async (req, res) => {
 export const updateJobStatus = async (req, res) => {
   try {
     const { jobId } = req.params;
-    const { status }= req.body;
+    const { status } = req.body;
     const recruiterId = req.user._id;
 
     const ALLOWED_STATUS = ["Open", "Closed"];
@@ -243,7 +240,7 @@ export const updateJobStatus = async (req, res) => {
       });
     }
 
-   job.status = status;
+    job.status = status;
     await job.save();
 
     return res.status(200).json({
@@ -261,30 +258,19 @@ export const updateJobStatus = async (req, res) => {
 
 export const deleteJob = async (req, res) => {
   try {
-    const {jobId} = req.params;
+    const { jobId } = req.params;
     const recruiterId = req.user._id;
-    
-    const result = await Job.deleteOne({
-      _id: jobId,
-      postedBy: recruiterId
-    })
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Job not found or unauthorized",
-      });
-    }
+    await deleteJobWithApplications(jobId, recruiterId);
 
     return res.status(200).json({
       success: true,
-      message: "Job deleted successfully"
-    })
-
+      message: "Job deleted successfully",
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Something went wrong while deleting the job"
-    })
+      message: "Something went wrong while deleting the job",
+    });
   }
-}
+};

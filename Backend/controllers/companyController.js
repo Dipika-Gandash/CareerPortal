@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 import { escapeRegex } from "../utils/escapeRegex.js";
 import {
   normalizeCompanyName,
-  normalizeLocations
+  normalizeLocations,
 } from "../utils/company.utils.js";
 import Job from "../models/jobSchema.js";
+import { deleteJobWithApplications } from "../services/jobService.js";
 
 export const createCompany = async (req, res) => {
   try {
@@ -171,7 +172,7 @@ export const updateCompany = async (req, res) => {
     if (location) {
       try {
         const incomingLocations = location;
-        const mergedLocations = [...company.location , ...incomingLocations];
+        const mergedLocations = [...company.location, ...incomingLocations];
         company.location = normalizeLocations(mergedLocations);
       } catch (err) {
         return res.status(400).json({
@@ -203,31 +204,35 @@ export const deleteCompany = async (req, res) => {
 
     const company = await Company.findOne({
       _id: companyId,
-      createdBy: recruiterId
-    })
+      createdBy: recruiterId,
+    });
 
-    if(!company) {
+    if (!company) {
       return res.status(404).json({
         success: false,
-        message: "No company found"
-      })
+        message: "No company found",
+      });
     }
 
-    await Job.deleteMany({
+    const jobs = await Job.find({
       company: companyId,
-      postedBy: recruiterId
-    })
+      postedBy: recruiterId,
+    }).select("_id");
+
+    for (const job of jobs) {
+      await deleteJobWithApplications(job._id, recruiterId);
+    }
 
     await company.deleteOne();
-    
+
     return res.status(200).json({
       success: true,
-      message: "Company deleted successfully"
-    })
+      message: "Company deleted successfully",
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
