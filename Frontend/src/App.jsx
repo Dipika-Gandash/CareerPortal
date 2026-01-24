@@ -1,9 +1,11 @@
 import NavBar from "./components/layout/NavBar"
+import { Outlet } from "react-router-dom"
  
 function App() {
   return (
     <div>
       <NavBar />
+      <Outlet />
     </div>
   )
 }
