@@ -4,20 +4,20 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import api from "../api/axios.js"
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await api.post('/api/v1/user/login', {email, password});
-
-      console.log(res.data);
-
+      toast.success("Login successfully");
+      console.log(res);
     } catch (error) {
-      console.log(error.response?.data?.message || error.message);
+     toast.error(error.response?.data?.message || "Something went wrong");
     }
   }
 
@@ -61,7 +61,6 @@ const Login = () => {
               Forgot password?
             </span>
           </div> */}
-
           <Button className="w-full">
             Login
           </Button>
