@@ -1,10 +1,26 @@
-import React from "react"
+import React, { useState } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import api from "../api/axios.js"
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.post('/api/v1/user/login', {email, password});
+
+      console.log(res.data);
+
+    } catch (error) {
+      console.log(error.response?.data?.message || error.message);
+    }
+  }
+
   return (
     <div className="flex mt-36 items-center justify-center px-4">
       
@@ -17,13 +33,15 @@ const Login = () => {
           </p>
         </div>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="email">Email address</Label>
             <Input
               id="email"
               type="email"
               placeholder="you@example.com"
+             value={email}
+             onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -33,6 +51,8 @@ const Login = () => {
               id="password"
               type="password"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
