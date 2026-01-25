@@ -171,7 +171,9 @@ export const updateCompany = async (req, res) => {
     if (website) company.website = website;
     if (location) {
       try {
-        const incomingLocations = location;
+        const incomingLocations = Array.isArray(location)
+          ? location
+          : [location];
         const mergedLocations = [...company.location, ...incomingLocations];
         company.location = normalizeLocations(mergedLocations);
       } catch (err) {

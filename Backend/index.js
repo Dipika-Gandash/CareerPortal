@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import cors from "cors";
 
 import connectToDatabase from './utils/database.js';
 import userRouter from './routes/userRoutes.js';
@@ -13,6 +14,11 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true
+}))
 app.use(express.urlencoded({extended: true}))
 app.use(cookieParser());
 

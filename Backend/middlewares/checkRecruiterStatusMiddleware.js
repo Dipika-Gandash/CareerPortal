@@ -3,7 +3,7 @@ export const checkRecruiterStatus = async (req, res, next) => {
     return res.status(403).json({
       success: false,
       message: "Your account is blocked. You cannot perform this action.",
-    });
+    }); 
   }
   next();
 };

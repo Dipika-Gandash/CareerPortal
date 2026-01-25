@@ -1,6 +1,7 @@
 import Company from "../models/companySchema.js";
 import Job from "../models/jobSchema.js";
 import User from "../models/userSchema.js";
+import Application from "../models/applicationSchema.js";
 
 export const getAllCompaniesAdmin = async (req, res) => {
   try {
@@ -150,7 +151,7 @@ export const deleteJobAdmin = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server error",
+      message: error.message,
     });
   }
 };
@@ -162,7 +163,7 @@ export const getRecruiters = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const recruiters = await User.find({ role: "recruiter" })
-      .select("firstName lastName email profile.bio")
+      .select("firstName lastName email profile.bio isBlocked")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
@@ -215,7 +216,7 @@ export const updateRecruiterStatus = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: "Internal Server Error",
+      message: error.message,
     });
   }
 };

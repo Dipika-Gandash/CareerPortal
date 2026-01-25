@@ -52,13 +52,16 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: [true, "Password is required"],
-      trim: true,
-      minlength: [8, "Password must be atleast 8 characters"],
-      match: [
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-        "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character (!@#$%^&*)",
-      ],
+      required: true,
+      minlength: 8,
+      validate: {
+        validator: function (value) {
+          if (!this.isModified("password")) return true;
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])/.test(value);
+        },
+        message:
+          "Password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character",
+      },
     },
 
     role: {
@@ -266,10 +269,10 @@ const userSchema = new mongoose.Schema(
 
     isBlocked: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.pre("save", async function () {
@@ -287,7 +290,7 @@ userSchema.methods.getJWT = function () {
     process.env.JWT_SECRET_KEY,
     {
       expiresIn: "7d",
-    }
+    },
   );
   return token;
 };
