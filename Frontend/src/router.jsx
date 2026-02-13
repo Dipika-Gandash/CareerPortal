@@ -4,6 +4,7 @@ import App from './App'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import HeroPage from './pages/HeroPage'
+import Browse from './pages/Browse'
 
 export const router = createBrowserRouter([
     {
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
             {
                 path: "/signup",
                 element: <SignUp />
+            },
+            {
+                path: "/browse",
+                element: <Browse />
             }
         ]
     }
