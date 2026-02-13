@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import api from "../api/axios.js";
 import toast from "react-hot-toast";
@@ -24,12 +24,15 @@ const SignUp = () => {
     });
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
       const res = await api.post("/api/v1/user/register", formData);
       toast.success("Account created successfully")
-      console.log(res.data);
+      navigate("/login")
+      
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }

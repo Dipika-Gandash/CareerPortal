@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from "cors";
+import multer from "multer"
 
 import connectToDatabase from './utils/database.js';
 import userRouter from './routes/userRoutes.js';

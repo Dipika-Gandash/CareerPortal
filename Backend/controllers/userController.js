@@ -115,6 +115,31 @@ export const logoutUser = (req, res) => {
   });
 };
 
+export const getMyData = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const getUserProfile = async (req, res) => {
   try {
     const user = req.user;
@@ -150,7 +175,7 @@ export const updateUserProfile = async (req, res) => {
     const updateFields = Object.keys(updates);
 
     const isInvalidUpdate = updateFields.some((field) =>
-      NOT_ALLOWED_FIELDS.includes(field)
+      NOT_ALLOWED_FIELDS.includes(field),
     );
 
     if (isInvalidUpdate) {
@@ -328,7 +353,7 @@ export const updateUserExperience = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Experience updated successfully",
-      experience : experience
+      experience: experience,
     });
   } catch (error) {
     return res.status(500).json({
@@ -464,5 +489,4 @@ export const deleteUserEducation = async (req, res) => {
       message: error.message,
     });
   }
-
 };

@@ -1,31 +1,42 @@
-import React, { useState } from "react"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
-import api from "../api/axios.js"
+import React, { useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api/axios.js";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/authSlice.jsx";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
- 
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post('/api/v1/user/login', {email, password});
-      toast.success("Login successfully");
-      console.log(res);
+      const { data } = await api.post("/api/v1/user/login", { email, password });
+
+      if (data.success) {
+        dispatch(setUser(data.user))
+        toast.success("Login successfully");
+        navigate("/")
+        console.log(data);
+      } 
+      else {
+        throw new Error(data.message)
+      }
     } catch (error) {
-     toast.error(error.response?.data?.message || "Something went wrong");
+      toast.error(error.response?.data?.message || error.message || "Something went wrong");
     }
-  }
+  };
 
   return (
     <div className="flex mt-36 items-center justify-center px-4">
-      
       <div className="w-full max-w-md rounded-xl border bg-white p-6 shadow-md sm:p-8 border-purple-900">
-        
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-bold text-gray-800">Welcome Back 👋</h1>
           <p className="mt-1 text-sm text-gray-600">
@@ -40,8 +51,8 @@ const Login = () => {
               id="email"
               type="email"
               placeholder="you@example.com"
-             value={email}
-             onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
@@ -61,21 +72,18 @@ const Login = () => {
               Forgot password?
             </span>
           </div> */}
-          <Button className="w-full">
-            Login
-          </Button>
+          <Button className="w-full">Login</Button>
 
           <p className="text-center text-sm text-gray-600">
             Don’t have an account?{" "}
             <span className="cursor-pointer font-medium text-indigo-600 hover:underline">
-             <Link to="/signup">Sign up</Link> 
+              <Link to="/signup">Sign up</Link>
             </span>
           </p>
-
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
