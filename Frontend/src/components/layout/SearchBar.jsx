@@ -8,7 +8,7 @@ const SearchBar = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
     if(!searchData.trim()) return ;
-    navigate(`/browse?keyword=${searchData}`)
+    navigate(`/browse?keyword=${searchData.toLowerCase()}`)
   };
   return (
    <div className="flex justify-center px-4 mt-6">
