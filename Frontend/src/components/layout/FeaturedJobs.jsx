@@ -14,7 +14,7 @@ const FeaturedJobs = () => {
     fetchJobs();
   }, []);
   return (
-    <div className="flex flex-col items-center justify-center mt-11 mx-24">
+    <div className="flex flex-col items-center justify-center mt-11 md:mx-24">
       <div>
         <h1 className=" text-2xl md:text-3xl font-bold">Featured Jobs</h1>
       </div>

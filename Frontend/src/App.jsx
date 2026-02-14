@@ -4,6 +4,7 @@ import { setUser, logOutUser } from "./store/authSlice";
 import { fetchCurrentUser } from "./api/user";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import Footer from "./components/layout/Footer";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ function App() {
     <div>
       <NavBar />
       <Outlet /> 
+      <Footer />
     </div>
   );
 }
