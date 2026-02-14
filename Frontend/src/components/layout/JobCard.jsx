@@ -29,7 +29,7 @@ const JobCard = ({ job }) => {
         </div>
       </div>
 
-      <button className="mt-5 w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition">
+      <button className="mt-5 w-full bg-purple-600 text-white py-2 rounded-lg cursor-pointer hover:bg-purple-700 transition">
         Apply
       </button>
     </div>
