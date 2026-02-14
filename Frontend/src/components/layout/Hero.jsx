@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const { user } = useSelector((state) => state.auth);
@@ -9,6 +10,8 @@ const Hero = () => {
   let primaryBtn = "Get Started";
   let secondaryBtn = "Login";
   let image = "mainImage.jpg";
+  let primaryLink = "/signup";
+  let secondaryLink = "/login"
 
   if (user) {
     if (user.role === "jobseeker") {
@@ -17,12 +20,16 @@ const Hero = () => {
       primaryBtn = "Browse Jobs";
       secondaryBtn = "View Applications";
       image = "jobSeekerImage.jpg";
+      primaryLink = "/browse";
+      secondaryLink ="/myApplications";
     } else if (user.role === "recruiter") {
       heading = `Discover Talent. Build Exceptional Teams.`;
       subheading = "Post jobs, connect with the best candidates, and make smarter hiring decisions — faster, easier, better.";
       primaryBtn = "Post a Job";
       secondaryBtn = "Manage Applicants";
       image = "recruiterImage.jpg";
+      primaryLink = "/postJob";
+      secondaryLink= "/manageApplicants"
     }
   }
 
@@ -33,8 +40,8 @@ const Hero = () => {
           <h1 className="text-3xl md:text-4xl font-bold leading-tight">{heading}</h1>
           <p className="mt-6 text-gray-600 text-lg max-w-xl">{subheading}</p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Button className="bg-purple-600">{primaryBtn}</Button>
-            <Button variant="outline" className="border-purple-600 text-purple-600">{secondaryBtn}</Button>
+           <Link to={primaryLink}><Button className="bg-purple-600 cursor-pointer">{primaryBtn}</Button></Link>
+           <Link to={secondaryLink}><Button variant="outline" className="border-purple-600 text-purple-600 cursor-pointer">{secondaryBtn}</Button></Link> 
           </div>
         </div>
 
