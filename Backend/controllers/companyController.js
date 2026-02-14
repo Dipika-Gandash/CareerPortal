@@ -39,13 +39,13 @@ export const createCompany = async (req, res) => {
       });
     }
 
-    let normalizedLocations = normalizeLocations(location);
+    // let normalizedLocations = normalizeLocations(location);
 
     const company = await Company.create({
       name: normalizedName,
       description,
       website,
-      location: normalizedLocations,
+      location,
       logo,
       createdBy: req.user._id,
     });

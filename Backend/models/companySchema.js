@@ -30,17 +30,8 @@ const companySchema = mongoose.Schema({
   },
 
   location: {
-    type: [String],
-    required: [true, "At leat one location is required"],
-    validate: {
-      validator: function (arr) {
-        return (
-          arr.length > 0 &&
-          arr.every((loc) => loc.length >= 2 && loc.length <= 100)
-        );
-      },
-      message: "Each location must be 2-100 characters long",
-    },
+    type: String,
+    required: [true, "Location is required"],
   },
 
   logo: {

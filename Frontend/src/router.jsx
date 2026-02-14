@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import HeroPage from './pages/HeroPage'
 import Browse from './pages/Browse'
+import CreateCompany from './pages/CreateCompany'
 
 export const router = createBrowserRouter([
     {
@@ -27,6 +28,14 @@ export const router = createBrowserRouter([
             {
                 path: "/browse",
                 element: <Browse />
+            },
+            {
+                path: "/recruiter/company/create",
+                element: <CreateCompany />
+            },
+            {
+                path: "/recruiter/companies",
+                element: <h1>Here My COmpanies</h1>
             }
         ]
     }

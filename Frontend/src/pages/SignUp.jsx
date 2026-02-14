@@ -41,7 +41,7 @@ const SignUp = () => {
     <div className="flex mt-9 items-center justify-center px-4">
       <div className="w-full max-w-md rounded-xl border bg-white shadow-md p-6 sm:p-8 border-purple-900">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold text-purple-700">
             Create an Account ✨
           </h1>
           <p className="mt-1 text-sm text-gray-700">

@@ -35,7 +35,7 @@ const NavBar = () => {
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
                 {user.role === "jobseeker"
                   ? "My Applications"
-                  : "Manage Applicants"}
+                  : "My Jobs"}
               </li>
 
               <Popover>
@@ -91,7 +91,7 @@ const NavBar = () => {
                 <li className="font-medium">
                   {user.role === "jobseeker"
                     ? "My Applications"
-                    : "Manage Applicants"}
+                    : "My Jobs"}
                 </li>
                 <Button variant="outline" className="w-full">
                   Profile

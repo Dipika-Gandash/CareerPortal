@@ -38,7 +38,7 @@ const Login = () => {
     <div className="flex mt-36 items-center justify-center px-4">
       <div className="w-full max-w-md rounded-xl border bg-white p-6 shadow-md sm:p-8 border-purple-900">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-800">Welcome Back 👋</h1>
+          <h1 className="text-2xl font-bold text-purple-700">Welcome Back 👋</h1>
           <p className="mt-1 text-sm text-gray-600">
             Login to your account to continue
           </p>
