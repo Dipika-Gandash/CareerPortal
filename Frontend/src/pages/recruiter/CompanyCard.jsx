@@ -2,6 +2,18 @@ import api from "@/api/axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import toast from "react-hot-toast";
 
 const CompanyCard = () => {
   const { companyId } = useParams();
@@ -28,6 +40,16 @@ const CompanyCard = () => {
     fetchCompanyDetails();
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/api/v1/company/${id}`);
+      toast.success("Company deleted successfully");
+      navigate("/recruiter/companies");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete company");
+    }
+  };
+
   if (loading) {
     return <p className="text-center mt-10">Loading...</p>;
   }
@@ -47,6 +69,7 @@ const CompanyCard = () => {
       </div>
     );
   }
+
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4">
       <div className="bg-white shadow-lg rounded-2xl p-8 border border-purple-300">
@@ -71,15 +94,50 @@ const CompanyCard = () => {
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mt-8">
-          <button onClick={() => navigate(`/recruiter/companies/${companyId}/create-job`)} className="px-4 py-2 rounded-xl bg-purple-600 text-white cursor-pointer">
+          <button
+            onClick={() =>
+              navigate(`/recruiter/companies/${companyId}/create-job`)
+            }
+            className="px-4 py-2 rounded-xl bg-purple-600 text-white cursor-pointer"
+          >
             Post Job
           </button>
-          <button onClick={() => navigate(`/recruiter/companies/${companyId}/update`)} className="px-4 py-2 rounded-xl bg-gray-300 text-black cursor-pointer">
+          <button
+            onClick={() => navigate(`/recruiter/companies/${companyId}/update`)}
+            className="px-4 py-2 rounded-xl bg-gray-300 text-black cursor-pointer"
+          >
             Edit Company Details
           </button>
-          <button className="px-4 py-2 rounded-xl bg-red-600 text-white cursor-pointer">
-            Delete Company
-          </button>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button className="px-4 py-2 rounded-xl bg-red-600 text-white cursor-pointer">
+                Delete
+              </button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Are you sure you want to delete this company?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your company and all related jobs.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => handleDelete(companyId)}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>
