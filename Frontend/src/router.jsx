@@ -7,6 +7,8 @@ import HeroPage from "./pages/HeroPage";
 import Browse from "./pages/Browse";
 import CreateCompany from "./pages/recruiter/CreateCompany";
 import MyCompanies from "./pages/recruiter/MyCompanies";
+import CompanyCard from "./pages/recruiter/CompanyCard";
+import UpdateCompany from "./pages/recruiter/UpdateCompany";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +45,14 @@ export const router = createBrowserRouter([
           {
             path:"companies/:companyId/create-job",
             element: <h1>Create Jobs for your company</h1>
+          },
+          {
+            path: "companies/:companyId",
+            element: <CompanyCard />
+          },
+          {
+            path: "companies/:companyId/update",
+            element: <UpdateCompany />
           }
         ],
       },

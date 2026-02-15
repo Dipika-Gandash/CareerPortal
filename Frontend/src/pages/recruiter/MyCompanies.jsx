@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const MyCompanies = () => {
   const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,19 +16,27 @@ const MyCompanies = () => {
         const res = await api("/api/v1/company/my");
         setCompanies(res.data.companies);
       } catch (error) {
-        toast.error(error.message || "Failed to Fetch Companies");
+        toast.error(
+          error.response?.data?.message || "Failed to fetch companies",
+        );
+
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchCompanies();
   }, []);
+
   return (
     <div className="max-w-3xl mx-auto mt-10 px-4">
       <h1 className="text-3xl font-bold mb-8 text-purple-700 text-center">
         My Companies
       </h1>
       <div className="space-y-6">
-        {companies.length === 0 ? (
+        {loading ? (
+          <p className="text-center text-lg">Loading companies...</p>
+        ) : companies.length === 0 ? (
           <div className="text-center">
             <p className="text-xl text-black font-semibold">
               {" "}
@@ -42,6 +51,7 @@ const MyCompanies = () => {
             <div
               key={company._id}
               className="flex flex-col md:flex-row items-center gap-4 bg-white border border-purple-300 shadow-md rounded-2xl p-6 hover:shadow-lg transition cursor-pointer"
+              onClick={() => navigate(`/recruiter/companies/${company._id}`)}
             >
               <div>
                 <img
@@ -60,8 +70,13 @@ const MyCompanies = () => {
                 </p>
                 <p className="text-purple-600 text-sm">{company.website}</p>
               </div>
-              <button className="px-4 py-2 border rounded-xl bg-purple-600 text-white cursor-pointer"
-              onClick={() => navigate(`/recruiter/companies/${company._id}/create-job`)}>
+              <button
+                className="px-4 py-2 border rounded-xl bg-purple-600 text-white cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/recruiter/companies/${company._id}/create-job`);
+                }}
+              >
                 Post Job
               </button>
             </div>
