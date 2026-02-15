@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const RecruiterCTA = () => {
   return (
     <div className="text-center">
@@ -18,9 +20,9 @@ const RecruiterCTA = () => {
         My Jobs
         </button>
 
-         <button className="border border-black px-6 py-2 rounded-lg">
+        <Link to="/recruiter/companies"><button className="border border-black cursor-pointer px-6 py-2 rounded-lg">
         My Companies
-        </button>
+        </button></Link> 
       </div>
     </div>
   );
