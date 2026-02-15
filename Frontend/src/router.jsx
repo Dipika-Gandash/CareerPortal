@@ -40,20 +40,20 @@ export const router = createBrowserRouter([
           },
           {
             path: "companies",
-            element: <MyCompanies />
-          },
-          {
-            path:"companies/:companyId/create-job",
-            element: <h1>Create Jobs for your company</h1>
+            element: <MyCompanies />,
           },
           {
             path: "companies/:companyId",
-            element: <CompanyCard />
+            element: <CompanyCard />,
           },
           {
             path: "companies/:companyId/update",
-            element: <UpdateCompany />
-          }
+            element: <UpdateCompany />,
+          },
+          {
+            path: "companies/:companyId/create-job",
+            element: <h1>Create Jobs for your company</h1>,
+          },
         ],
       },
     ],

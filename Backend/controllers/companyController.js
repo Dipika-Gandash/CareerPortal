@@ -158,6 +158,7 @@ export const updateCompany = async (req, res) => {
 
       const existingCompany = await Company.findOne({
         name: { $regex: `^${safeName}$`, $options: "i" },
+        _id: { $ne: companyId }
       });
       if (existingCompany) {
         return res.status(409).json({
@@ -169,20 +170,7 @@ export const updateCompany = async (req, res) => {
 
     if (description) company.description = description;
     if (website) company.website = website;
-    if (location) {
-      try {
-        const incomingLocations = Array.isArray(location)
-          ? location
-          : [location];
-        const mergedLocations = [...company.location, ...incomingLocations];
-        company.location = normalizeLocations(mergedLocations);
-      } catch (err) {
-        return res.status(400).json({
-          success: false,
-          message: err.message,
-        });
-      }
-    }
+    if (location) company.location = location;
 
     if (logo) company.logo = logo;
     await company.save();
