@@ -54,8 +54,7 @@ export const createJob = async (req, res) => {
       requirements.length === 0 ||
       !salary ||
       isNaN(minSalary) ||
-      isNaN(maxSalary) ||
-      minSalary > maxSalary
+      isNaN(maxSalary) 
     ) {
       return res.status(400).json({
         success: false,
@@ -63,6 +62,12 @@ export const createJob = async (req, res) => {
       });
     }
 
+    if(minSalary > maxSalary) {
+       return res.status(400).json({
+        success: false,
+        message: "Max Salary should be greater than Min Salary",
+      });
+    }
     const normalizedRequirements = [
       ...new Set(
         requirements
