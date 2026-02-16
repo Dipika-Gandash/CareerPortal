@@ -79,10 +79,8 @@ const CreateJob = () => {
       toast.success("Job created Successfully");
       navigate(`/recruiter/companies/${companyId}/jobs`);
     } catch (error) {
-      console.log(error)
-     toast.error(
-    error.response?.data?.message || "Something went wrong"
-  );
+      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setCreatingJob(false);
     }
@@ -269,7 +267,15 @@ const CreateJob = () => {
             />
           </div>
 
-          <div className="text-center pt-4">
+          <div className="text-center pt-4 flex  gap-4 justify-center">
+              <Button
+              variant="outline"
+              type="button"
+              onClick={() => navigate("/recruiter/companies")}
+            >
+              ← Go Back
+            </Button>
+
             <button
               type="submit"
               disabled={creatingJob}
@@ -281,6 +287,7 @@ const CreateJob = () => {
             >
               {creatingJob ? "Creating..." : "Create Job"}
             </button>
+          
           </div>
         </form>
       </div>

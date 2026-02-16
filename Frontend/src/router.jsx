@@ -10,6 +10,7 @@ import MyCompanies from "./pages/recruiter/MyCompanies";
 import CompanyCard from "./pages/recruiter/CompanyCard";
 import UpdateCompany from "./pages/recruiter/UpdateCompany";
 import CreateJob from "./pages/recruiter/CreateJob";
+import MyJobs from "./pages/recruiter/MyJobs";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +59,10 @@ export const router = createBrowserRouter([
           {
             path: "companies/:companyId/jobs",
             element: <h1>Company Jobs here:</h1>
+          },
+          {
+            path: "my-jobs",
+            element: <MyJobs />
           }
       
         ],
