@@ -126,6 +126,42 @@ export const getCompanyById = async (req, res) => {
   }
 };
 
+export const getCompanyJobs = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { companyId } = req.params;
+
+    const company = await Company.findOne({
+      _id: companyId,
+      createdBy: userId,
+    });
+
+    if (!company) {
+      return res.status(404).json({
+        success: false,
+        message: "Company not found",
+      });
+    }
+
+    const companyJobs = await Job.find({
+      postedBy: userId,
+      company: companyId,
+    }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      companyJobs,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
 export const updateCompany = async (req, res) => {
   try {
     const userId = req.user._id;
