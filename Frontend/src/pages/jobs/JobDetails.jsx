@@ -1,8 +1,19 @@
 import api from "@/api/axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 const JobDetails = () => {
   const { jobId } = useParams();
@@ -29,6 +40,20 @@ const JobDetails = () => {
   if (loading) {
     return <p className="mx-auto">Loading...</p>;
   }
+
+  const handleJobStatus = async (jobId, newStatus) => {
+    try {
+      const res = await api.patch(`/api/v1/job/${jobId}/status` , {status: newStatus});
+       if (res.data.success) {
+      setJobDetails(prev => ({
+    ...prev,
+    status: newStatus
+  }));
+    }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "")
+    }
+  };
 
   return (
     <div className="max-w-5xl mx-auto mt-11 px-4">
@@ -106,11 +131,46 @@ const JobDetails = () => {
           )}
 
           {user?.role === "recruiter" &&
-            jobDetails?.postedBy?._id === user?.id && (
+            jobDetails?.postedBy?._id.toString() === user?.id && (
               <>
-                <button className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600 transition">
-                  Update Status
-                </button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button className="px-4 py-2 rounded-xl bg-yellow-500 text-white cursor-pointer hover:bg-yellow-600">
+                      Update Status
+                    </button>
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Update Job Status</AlertDialogTitle>
+
+                      <AlertDialogDescription className="text-gray-800">
+                        Current status: <strong>{jobDetails?.status}</strong>
+                        {jobDetails?.status === "Open"
+                          ? " This will close the job and candidates will no longer be able to apply."
+                          : " This will reopen the job and candidates can apply again."}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                      <AlertDialogAction
+                        onClick={() =>
+                          handleJobStatus(
+                            jobDetails?._id,
+                            jobDetails?.status === "Open" ? "Closed" : "Open",
+                          )
+                        }
+                        className="bg-yellow-600 hover:bg-yellow-700"
+                      >
+                        {jobDetails?.status === "Open"
+                          ? "Close Job"
+                          : "Open Job"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
 
                 <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
                   Delete Job
