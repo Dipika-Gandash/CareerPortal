@@ -3,10 +3,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../api/axios.js";
+import api from "@/api/axios";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { setUser } from "../store/authSlice.jsx";
+import { setUser } from "@/store/authSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");

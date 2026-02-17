@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import api from "../api/axios.js";
+import api from "../../api/axios.js";
 import toast from "react-hot-toast";
 
 const SignUp = () => {
