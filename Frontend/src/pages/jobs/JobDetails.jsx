@@ -1,6 +1,6 @@
 import api from "@/api/axios";
 import React, { useEffect, useState } from "react";
-import {useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import {
@@ -20,6 +20,7 @@ const JobDetails = () => {
   const [jobDetails, setJobDetails] = useState("");
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -43,17 +44,31 @@ const JobDetails = () => {
 
   const handleJobStatus = async (jobId, newStatus) => {
     try {
-      const res = await api.patch(`/api/v1/job/${jobId}/status` , {status: newStatus});
-       if (res.data.success) {
-      setJobDetails(prev => ({
-    ...prev,
-    status: newStatus
-  }));
-    }
+      const res = await api.patch(`/api/v1/job/${jobId}/status`, {
+        status: newStatus,
+      });
+      if (res.data.success) {
+        setJobDetails((prev) => ({
+          ...prev,
+          status: newStatus,
+        }));
+      }
     } catch (error) {
-      toast.error(error.response?.data?.message || "")
+      toast.error(error.response?.data?.message || "");
     }
   };
+
+  const handleDeleteJob = async () => {
+    try {
+      const res = await api.delete(`/api/v1/job/${jobId}`);
+      if(res?.data?.message) {
+        toast.success("Job deleted successfully")
+        navigate("/recruiter/my-jobs");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "");
+    }
+  }
 
   return (
     <div className="max-w-5xl mx-auto mt-11 px-4">
@@ -172,9 +187,35 @@ const JobDetails = () => {
                   </AlertDialogContent>
                 </AlertDialog>
 
-                <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition">
-                  Delete Job
-                </button>
+               <AlertDialog>
+                           <AlertDialogTrigger asChild>
+                             <button className="px-4 py-2 rounded-xl bg-red-600 text-white cursor-pointer">
+                               Delete
+                             </button>
+                           </AlertDialogTrigger>
+               
+                           <AlertDialogContent>
+                             <AlertDialogHeader>
+                               <AlertDialogTitle>
+                                 Are you sure you want to delete this company?
+                               </AlertDialogTitle>
+                               <AlertDialogDescription className="text-gray-700">
+                                 This action cannot be undone. This will permanently delete
+                                 your company and all related jobs.
+                               </AlertDialogDescription>
+                             </AlertDialogHeader>
+               
+                             <AlertDialogFooter>
+                               <AlertDialogCancel>Cancel</AlertDialogCancel>
+                               <AlertDialogAction
+                                 onClick={handleDeleteJob}
+                                 className="bg-red-600 hover:bg-red-700"
+                               >
+                                 Delete
+                               </AlertDialogAction>
+                             </AlertDialogFooter>
+                           </AlertDialogContent>
+                         </AlertDialog>
               </>
             )}
         </div>
