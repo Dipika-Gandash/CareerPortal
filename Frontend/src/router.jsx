@@ -12,6 +12,7 @@ import UpdateCompany from "./pages/recruiter/UpdateCompany";
 import CreateJob from "./pages/recruiter/CreateJob";
 import MyJobs from "./pages/recruiter/MyJobs";
 import JobDetails from "./pages/jobs/JobDetails";
+import CompanyJobs from "./pages/recruiter/CompanyJobs";
 
 export const router = createBrowserRouter([
   {
@@ -59,7 +60,7 @@ export const router = createBrowserRouter([
           },
           {
             path: "companies/:companyId/jobs",
-            element: <h1>Company Jobs here:</h1>
+            element: <CompanyJobs />
           },
           {
             path: "my-jobs",

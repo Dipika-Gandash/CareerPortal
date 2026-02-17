@@ -103,6 +103,12 @@ const CompanyCard = () => {
             Post Job
           </button>
           <button
+            onClick={() => navigate(`/recruiter/companies/${companyId}/jobs`)}
+            className="px-4 py-2 rounded-xl bg-green-600 text-white cursor-pointer"
+          >
+            View Jobs
+          </button>
+          <button
             onClick={() => navigate(`/recruiter/companies/${companyId}/update`)}
             className="px-4 py-2 rounded-xl bg-gray-300 text-black cursor-pointer"
           >
