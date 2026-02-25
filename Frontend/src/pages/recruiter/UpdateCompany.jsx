@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
+import Loader from "@/components/common/Loader";
 
 const UpdateCompany = () => {
   const { companyId } = useParams();
@@ -66,7 +67,7 @@ const UpdateCompany = () => {
   };
 
   if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return <Loader />
   }
 
   return (

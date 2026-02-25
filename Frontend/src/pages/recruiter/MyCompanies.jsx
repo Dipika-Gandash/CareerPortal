@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Loader from "@/components/common/Loader";
 
 const MyCompanies = () => {
   const [companies, setCompanies] = useState([]);
@@ -28,15 +29,15 @@ const MyCompanies = () => {
     fetchCompanies();
   }, []);
 
+  if(loading) return <Loader />
+
   return (
     <div className="max-w-3xl mx-auto mt-10 px-4">
       <h1 className="text-3xl font-bold mb-8 text-purple-700 text-center">
         My Companies
       </h1>
       <div className="space-y-6">
-        {loading ? (
-          <p className="text-center text-lg">Loading companies...</p>
-        ) : companies.length === 0 ? (
+        { companies.length === 0 ? (
           <div className="text-center">
             <p className="text-xl text-black font-semibold">
               {" "}

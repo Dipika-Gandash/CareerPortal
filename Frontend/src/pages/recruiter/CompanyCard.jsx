@@ -14,6 +14,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import toast from "react-hot-toast";
+import Loader from "@/components/common/Loader";
 
 const CompanyCard = () => {
   const { companyId } = useParams();
@@ -51,7 +52,7 @@ const CompanyCard = () => {
   };
 
   if (loading) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return <Loader />
   }
 
   if (error) {

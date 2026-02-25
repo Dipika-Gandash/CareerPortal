@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import JobCard from "@/components/layout/JobCard";
 import toast from "react-hot-toast";
 import api from "@/api/axios";
+import Loader from "@/components/common/Loader";
 
 const MyJobs = () => {
   const [jobsData, setJobsData] = useState([]);
@@ -28,13 +29,7 @@ const MyJobs = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-60">
-        <p className="text-lg font-semibold text-gray-600">
-          Loading your jobs...
-        </p>
-      </div>
-    );
+    return <Loader />
   }
 
   return (

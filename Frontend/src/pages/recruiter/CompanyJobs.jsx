@@ -3,6 +3,7 @@ import JobCard from "@/components/layout/JobCard";
 import toast from "react-hot-toast";
 import api from "@/api/axios";
 import { useParams } from "react-router-dom";
+import Loader from "@/components/common/Loader";
 
 const CompanyJobs = () => {
   const [companyJobs, setCompanyJobs] = useState([]);
@@ -27,11 +28,7 @@ const CompanyJobs = () => {
   }, [companyId]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-60">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-indigo-600"></div>
-      </div>
-    );
+    return <Loader />
   }
 
   return (

@@ -14,6 +14,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import Loader from "@/components/common/Loader";
 
 const JobDetails = () => {
   const { jobId } = useParams();
@@ -38,10 +39,7 @@ const JobDetails = () => {
     fetchJobDetails();
   }, []);
 
-  if (loading) {
-    return <p className="mx-auto">Loading...</p>;
-  }
-
+ 
   const handleJobStatus = async (jobId, newStatus) => {
     try {
       const res = await api.patch(`/api/v1/job/${jobId}/status`, {
@@ -69,6 +67,11 @@ const JobDetails = () => {
       toast.error(error.response?.data?.message || "");
     }
   }
+
+   if (loading) {
+    return <Loader />
+  }
+
 
   return (
     <div className="max-w-5xl mx-auto mt-11 px-4">

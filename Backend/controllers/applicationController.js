@@ -15,8 +15,7 @@ export const applyJob = async (req, res) => {
         message: "Job not found",
       });
     }
-
-    // prevent duplicate applications
+    
     const existingApplication = await Application.findOne({
       user: userId,
       job: jobId,

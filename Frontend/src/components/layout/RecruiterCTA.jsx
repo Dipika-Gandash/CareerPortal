@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const RecruiterCTA = () => {
+  const navigate = useNavigate();
   return (
     <div className="text-center">
       <h1 className="text-2xl md:text-3xl font-bold">
@@ -13,7 +15,7 @@ const RecruiterCTA = () => {
 
       <div className="mt-6 flex flex-wrap justify-center gap-4">
         <button className="bg-black text-white px-6 py-2 rounded-lg">
-          Post a Job
+         Create Company
         </button>
     
         <button className="border border-black px-6 py-2 rounded-lg">
