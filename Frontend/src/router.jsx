@@ -13,6 +13,7 @@ import CreateJob from "./pages/recruiter/CreateJob";
 import MyJobs from "./pages/recruiter/MyJobs";
 import JobDetails from "./pages/jobs/JobDetails";
 import CompanyJobs from "./pages/recruiter/CompanyJobs";
+import AddExperience from "./pages/profile/AddExperience";
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +35,16 @@ export const router = createBrowserRouter([
       {
         path: "browse",
         element: <Browse />,
+      },
+      {
+        path: "profile",
+        children: [
+          {
+            path: "experience/add",
+            element: <AddExperience />
+          }
+        ]
+
       },
       {
         path: "recruiter",
