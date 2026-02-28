@@ -25,6 +25,7 @@ const AddExperience = () => {
     isCurrent: false,
     description: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -37,12 +38,16 @@ const AddExperience = () => {
 
   const handleSubmitExperience = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       await api.post("/api/v1/user/profile/experience", formData);
       toast.success("Experience added successfully");
       navigate("/profile");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -176,8 +181,24 @@ const AddExperience = () => {
           </div>
 
           <div className="flex justify-between p-4 space-y-2">
-            <button type="button" className="px-4 py-2 cursor-pointer bg-green-700 text-white rounded-md" onClick={() => navigate("/profile")}>Go Back</button>
-            <button type="submit" className="px-4 py-2 cursor-pointer bg-purple-700 text-white rounded-md">Add Experience</button>
+            <button
+              type="button"
+              className="px-4 py-2 cursor-pointer bg-green-700 text-white rounded-md"
+              onClick={() => navigate("/profile")}
+            >
+              Go Back
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={`px-4 py-2 rounded-md text-white ${
+                isSubmitting
+                  ? "bg-purple-400 cursor-not-allowed"
+                  : "bg-purple-700 hover:bg-purple-800"
+              }`}
+            >
+              {isSubmitting ? "Saving..." : "Add Experience"}
+            </button>
           </div>
         </form>
       </div>

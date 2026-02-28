@@ -14,6 +14,7 @@ import MyJobs from "./pages/recruiter/MyJobs";
 import JobDetails from "./pages/jobs/JobDetails";
 import CompanyJobs from "./pages/recruiter/CompanyJobs";
 import AddExperience from "./pages/profile/AddExperience";
+import AddEducation from "./pages/profile/AddEducation";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
           {
             path: "experience/add",
             element: <AddExperience />
+          },
+          {
+            path: "education/add",
+            element: <AddEducation />
           }
         ]
 
