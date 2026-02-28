@@ -1,8 +1,10 @@
-import express from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+
+import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from "cors";
-import multer from "multer"
+import path from "path";
 
 import connectToDatabase from './utils/database.js';
 import userRouter from './routes/userRoutes.js';
@@ -11,7 +13,7 @@ import jobRouter from './routes/jobRoutes.js';
 import applicationRouter from './routes/applicationRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 
-dotenv.config();
+
 
 const app = express();
 app.use(express.json());
@@ -22,7 +24,7 @@ app.use(cors({
 }))
 app.use(express.urlencoded({extended: true}))
 app.use(cookieParser());
-
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/company", companyRouter);
