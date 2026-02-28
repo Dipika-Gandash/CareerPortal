@@ -13,29 +13,39 @@ const CreateCompany = () => {
     description: "",
     website: "",
     location: "",
-    logo: "",
+    companyLogo: null,
   });
-  
+
   const navigate = useNavigate();
 
   const handleCompanyData = (e) => {
+    const { name, files, value, type } = e.target;
     setCompanyFormData({
       ...companyFormData,
-      [e.target.name] : e.target.value
-    })
+      [name]: type === "file" ? files[0] : value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/api/v1/company/create", companyFormData);
-       toast.success("Company created successfully")
-       navigate("/recruiter/companies")
+      const formData = new FormData();
+      formData.append("name", companyFormData.name);
+      formData.append("description", companyFormData.description);
+      formData.append("website", companyFormData.website);
+      formData.append("location", companyFormData.location);
+
+      if (companyFormData.companyLogo) {
+        formData.append("companyLogo", companyFormData.companyLogo);
+      }
+      const res = await api.post("/api/v1/company/create", formData);
+      toast.success("Company created successfully");
+      navigate("/recruiter/companies");
       console.log(res.data);
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
-  }
+  };
   return (
     <div className="flex justify-center items-center mt-4 px-4">
       <div className="w-full max-w-xl bg-white border border-purple-100 shadow-2xl rounded-2xl p-8">
@@ -48,9 +58,8 @@ const CreateCompany = () => {
             <Label htmlFor="name">Company Name</Label>
             <Input
               id="name"
-               name="name"
+              name="name"
               type="text"
-             
               placeholder="Enter company name"
               value={companyFormData.name}
               onChange={handleCompanyData}
@@ -81,7 +90,7 @@ const CreateCompany = () => {
             />
           </div>
 
-            <div className="space-y-2">
+          <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <textarea
               id="description"
@@ -97,10 +106,9 @@ const CreateCompany = () => {
             <Label htmlFor="logo">Logo URL</Label>
             <Input
               id="logo"
-              name="logo"
-              type="text"
-              placeholder="Paste logo URL"
-              value={companyFormData.logo}
+              name="companyLogo"
+              type="file"
+              accept="image/*"
               onChange={handleCompanyData}
             />
           </div>

@@ -7,10 +7,26 @@ import {
 } from "../utils/company.utils.js";
 import Job from "../models/jobSchema.js";
 import { deleteJobWithApplications } from "../services/jobService.js";
+import cloudinary from "../config/cloudinary.js";
+import fs from "fs";
 
 export const createCompany = async (req, res) => {
   try {
-    const { name, description, website, location, logo } = req.body;
+    const { name, description, website, location } = req.body;
+    console.log("file received : ", req.file);
+    let companyLogo = "";
+    let companyLogoPublicId = "";
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "company_logos",
+      });
+
+      companyLogo = result.secure_url;
+      companyLogoPublicId = result.public_id;
+      console.log(result);
+      fs.unlinkSync(req.file.path);
+    }
 
     if (!name || !description || !website || !location) {
       return res.status(400).json({
@@ -39,14 +55,13 @@ export const createCompany = async (req, res) => {
       });
     }
 
-    // let normalizedLocations = normalizeLocations(location);
-
     const company = await Company.create({
       name: normalizedName,
       description,
       website,
       location,
-      logo,
+      companyLogo,
+      companyLogoPublicId,
       createdBy: req.user._id,
     });
 
@@ -59,7 +74,7 @@ export const createCompany = async (req, res) => {
         description: company.description,
         website: company.website,
         location: company.location,
-        logo: company.logo,
+        logo: company.companyLogo,
       },
     });
   } catch (error) {
@@ -152,7 +167,6 @@ export const getCompanyJobs = async (req, res) => {
       success: true,
       companyJobs,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -160,7 +174,6 @@ export const getCompanyJobs = async (req, res) => {
     });
   }
 };
-
 
 export const updateCompany = async (req, res) => {
   try {
@@ -179,7 +192,7 @@ export const updateCompany = async (req, res) => {
       });
     }
 
-    const { name, description, website, location, logo } = req.body;
+    const { name, description, website, location } = req.body;
 
     if (name) {
       const normalizedName = normalizeCompanyName(name);
@@ -194,7 +207,7 @@ export const updateCompany = async (req, res) => {
 
       const existingCompany = await Company.findOne({
         name: { $regex: `^${safeName}$`, $options: "i" },
-        _id: { $ne: companyId }
+        _id: { $ne: companyId },
       });
       if (existingCompany) {
         return res.status(409).json({
@@ -208,7 +221,20 @@ export const updateCompany = async (req, res) => {
     if (website) company.website = website;
     if (location) company.location = location;
 
-    if (logo) company.logo = logo;
+    if (req.file) {
+      if (company.companyLogoPublicId) {
+        await cloudinary.uploader.destroy(company.companyLogoPublicId);
+      }
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "company_logos",
+      });
+
+      company.companyLogo = result.secure_url;
+      company.companyLogoPublicId = result.public_id;
+
+      console.log(result);
+      fs.unlinkSync(req.file.path);
+    }
     await company.save();
     return res.status(200).json({
       success: true,

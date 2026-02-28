@@ -76,7 +76,7 @@ const CompanyCard = () => {
       <div className="bg-white shadow-lg rounded-2xl p-8 border border-purple-300">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <img
-            src={companyData.logo || "/company_9712830.png"}
+            src={companyData.companyLogo || "/company_9712830.png"}
             alt="logo"
             className="w-24 h-24 rounded-full object-cover border"
           />

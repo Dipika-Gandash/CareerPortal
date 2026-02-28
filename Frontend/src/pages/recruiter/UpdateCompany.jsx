@@ -16,7 +16,7 @@ const UpdateCompany = () => {
     description: "",
     website: "",
     location: "",
-    logo: "",
+    companyLogo: null,
   });
 
   const [loading, setLoading] = useState(true);
@@ -33,6 +33,7 @@ const UpdateCompany = () => {
           description: company.description || "",
           website: company.website || "",
           location: company.location || "",
+          companyLogo: company.companyLogo || null,
         });
       } catch (error) {
         toast.error(error.response?.data?.message || "Failed to load company");
@@ -46,9 +47,10 @@ const UpdateCompany = () => {
   }, [companyId, navigate]);
 
   const handleCompanyData = async (e) => {
+    const { name, files, value, type } = e.target;
     setCompanyData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: type === "file" ? files[0] : value,
     }));
   };
 
@@ -56,7 +58,17 @@ const UpdateCompany = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await api.patch(`/api/v1/company/${companyId}`, companyData);
+      const formData = new FormData();
+      formData.append("name", companyData.name);
+      formData.append("description", companyData.description);
+      formData.append("website", companyData.website);
+      formData.append("location", companyData.location);
+
+      if (companyData.companyLogo) {
+        formData.append("companyLogo", companyData.companyLogo);
+      }
+
+      await api.patch(`/api/v1/company/${companyId}`, formData);
       toast.success("Company updated successfully");
       navigate(`/recruiter/companies/${companyId}`);
     } catch (error) {
@@ -67,7 +79,7 @@ const UpdateCompany = () => {
   };
 
   if (loading) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
@@ -130,21 +142,20 @@ const UpdateCompany = () => {
             <Label htmlFor="logo">Logo URL</Label>
             <Input
               id="logo"
-              name="logo"
-              type="text"
-              placeholder="Paste logo URL"
-              value={companyData.logo}
+              name="companyLogo"
+              type="file"
+              accept="image/*"
               onChange={handleCompanyData}
             />
           </div>
 
-         <button
-          type="submit"
-          disabled={submitting}
-          className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition"
-        >
-          {submitting ? "Updating..." : "Update Company"}
-        </button>
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition"
+          >
+            {submitting ? "Updating..." : "Update Company"}
+          </button>
         </form>
       </div>
     </div>

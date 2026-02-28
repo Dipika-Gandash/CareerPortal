@@ -56,7 +56,7 @@ const MyCompanies = () => {
             >
               <div>
                 <img
-                  src={company.logo || "/company_9712830.png"}
+                  src={company.companyLogo || "/company_9712830.png"}
                   alt="logo"
                   className="w-20 h-20 rounded-full object-cover border border-purple-200"
                 />
