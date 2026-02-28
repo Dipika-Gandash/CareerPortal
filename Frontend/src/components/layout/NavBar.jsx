@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -10,11 +9,27 @@ import {
 } from "@/components/ui/popover";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import api from "@/api/axios";
+import { useDispatch } from "react-redux";
+import { logOutUser } from "@/store/authSlice";
 
 const NavBar = () => {
   const [open, setOpen] = useState(false);
   const user = useSelector((store) => store.auth.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogOut = async () => {
+    try {
+      await api.post("/api/v1/user/logout");
+      dispatch(logOutUser())
+      toast.success("Logout Successfully");
+      navigate("/login");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
     <header className="w-full border-b bg-white">
@@ -27,15 +42,13 @@ const NavBar = () => {
           {user ? (
             <>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
-              <Link to="/">Home</Link>
+                <Link to="/">Home</Link>
               </li>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
-             {user.role === "jobseeker" ? "Browse Jobs" : "Post Job"}
+                {user.role === "jobseeker" ? "Browse Jobs" : "Post Job"}
               </li>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
-                {user.role === "jobseeker"
-                  ? "My Applications"
-                  : "My Jobs"}
+                {user.role === "jobseeker" ? "My Applications" : "My Jobs"}
               </li>
 
               <Popover>
@@ -54,9 +67,9 @@ const NavBar = () => {
                     <p className="cursor-pointer text-sm hover:text-indigo-600">
                       Applications
                     </p>
-                    <p className="cursor-pointer text-sm text-red-500">
+                    <button className="cursor-pointer text-sm bg-red-500 text-white px-4 py-2 rounded-md" onClick={handleLogOut}>
                       Logout
-                    </p>
+                    </button>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -64,10 +77,14 @@ const NavBar = () => {
           ) : (
             <>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
-              <Link to="/">Home</Link>
+                <Link to="/">Home</Link>
               </li>
-             <Link to="/login"><Button>Login</Button></Link> 
-             <Link to="/signup"><Button>Sign Up</Button></Link> 
+              <Link to="/login">
+                <Button>Login</Button>
+              </Link>
+              <Link to="/signup">
+                <Button>Sign Up</Button>
+              </Link>
             </>
           )}
         </ul>
@@ -89,9 +106,7 @@ const NavBar = () => {
                   {user.role === "jobseeker" ? "Browse Jobs" : "Post Job"}
                 </li>
                 <li className="font-medium">
-                  {user.role === "jobseeker"
-                    ? "My Applications"
-                    : "My Jobs"}
+                  {user.role === "jobseeker" ? "My Applications" : "My Jobs"}
                 </li>
                 <Button variant="outline" className="w-full">
                   Profile
@@ -99,12 +114,12 @@ const NavBar = () => {
               </>
             ) : (
               <>
-                <li className="font-medium"><Link to="/">Home</Link></li>
+                <li className="font-medium">
+                  <Link to="/">Home</Link>
+                </li>
                 <Link to="/login">
                   {" "}
-                  <Button className="w-full">
-                    Login
-                  </Button>
+                  <Button className="w-full">Login</Button>
                 </Link>
 
                 <Link to="/signup">

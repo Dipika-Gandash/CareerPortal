@@ -30,9 +30,15 @@ const pdfFileFilter = (req, file, cb) => {
 export const uploadCompanyLogo = multer({
   storage,
   fileFilter: imageFileFilter,
+   limits: {
+    fileSize: 2 * 1024 * 1024, 
+  },
 });
 
 export const uploadResume = multer({
   storage,
   fileFilter: pdfFileFilter,
+   limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
 });

@@ -103,7 +103,7 @@ const CreateCompany = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="logo">Logo URL</Label>
+            <Label htmlFor="logo">Logo</Label>
             <Input
               id="logo"
               name="companyLogo"

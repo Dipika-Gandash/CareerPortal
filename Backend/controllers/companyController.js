@@ -13,7 +13,6 @@ import fs from "fs";
 export const createCompany = async (req, res) => {
   try {
     const { name, description, website, location } = req.body;
-    console.log("file received : ", req.file);
     let companyLogo = "";
     let companyLogoPublicId = "";
 
@@ -24,7 +23,6 @@ export const createCompany = async (req, res) => {
 
       companyLogo = result.secure_url;
       companyLogoPublicId = result.public_id;
-      console.log(result);
       fs.unlinkSync(req.file.path);
     }
 
@@ -231,8 +229,6 @@ export const updateCompany = async (req, res) => {
 
       company.companyLogo = result.secure_url;
       company.companyLogoPublicId = result.public_id;
-
-      console.log(result);
       fs.unlinkSync(req.file.path);
     }
     await company.save();

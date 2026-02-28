@@ -12,7 +12,6 @@ const companyRouter = Router();
 companyRouter.post('/create', isAuthenticated, isRecruiter, checkRecruiterStatus, uploadCompanyLogo.single("companyLogo"), createCompany);
 companyRouter.get('/my', isAuthenticated, isRecruiter, getMyCompanies);
 
-
 companyRouter.get('/:companyId', isAuthenticated, isRecruiter, validateObjectId('companyId'), getCompanyById);
 companyRouter.patch('/:companyId', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), uploadCompanyLogo.single("companyLogo"), updateCompany);
 companyRouter.delete('/:companyId', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), deleteCompany);

@@ -32,6 +32,26 @@ app.use("/api/v1/job", jobRouter);
 app.use("/api/v1/application", applicationRouter);
 app.use("/api/v1/admin", adminRouter);
 
+app.use((err, req, res, next) => {
+  if (err.code === "LIMIT_FILE_SIZE") {
+    return res.status(400).json({
+      message: "File too large. Please upload a smaller file.",
+    });
+  }
+
+  if (err.message === "Only image files are allowed") {
+    return res.status(400).json({ message: err.message });
+  }
+
+  if (err.message === "Only PDF allowed") {
+    return res.status(400).json({ message: err.message });
+  }
+
+  return res.status(500).json({
+    message: err.message || "Something went wrong",
+  });
+});
+
 const startServer = async () => {
     try {
         await connectToDatabase();
