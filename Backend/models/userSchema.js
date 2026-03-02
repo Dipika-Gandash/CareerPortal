@@ -214,11 +214,6 @@ const userSchema = new mongoose.Schema(
         ],
       },
 
-      resumeOriginalName: {
-        type: String,
-        trim: true,
-      },
-
       profilePhoto: {
         type: String,
         trim: true,

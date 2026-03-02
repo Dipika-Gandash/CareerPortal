@@ -15,6 +15,8 @@ import JobDetails from "./pages/jobs/JobDetails";
 import CompanyJobs from "./pages/recruiter/CompanyJobs";
 import AddExperience from "./pages/profile/AddExperience";
 import AddEducation from "./pages/profile/AddEducation";
+import ProfilePage from "./pages/profile/ProfilePage";
+import UpdateProfile from "./pages/profile/UpdateProfile";
 
 export const router = createBrowserRouter([
   {
@@ -41,12 +43,21 @@ export const router = createBrowserRouter([
         path: "profile",
         children: [
           {
+            index: true,
+            element: <ProfilePage />
+
+          },
+          {
             path: "experience/add",
             element: <AddExperience />
           },
           {
             path: "education/add",
             element: <AddEducation />
+          },
+          {
+            path: "update",
+            element: <UpdateProfile />
           }
         ]
 
