@@ -213,6 +213,10 @@ const userSchema = new mongoose.Schema(
           "Please provide a valid resume file path or URL",
         ],
       },
+      resumePublicId: {
+        type: String,
+        trim: true
+      },
 
       profilePhoto: {
         type: String,
@@ -223,6 +227,11 @@ const userSchema = new mongoose.Schema(
           /^(https?:\/\/)([\w\-]+(\.[\w\-]+)+)([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?$/,
           "Please provide a valid image URL",
         ],
+      },
+
+      profilePhotoPublicId: {
+        type: String,
+        trim: true,
       },
 
       socialLinks: {

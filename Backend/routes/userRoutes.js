@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { registerUser, loginUser, logoutUser, getUserProfile, updateUserProfile , addNewExperience, addNewEducation, updateUserExperience , updateUserEducation, deleteUserExperience, deleteUserEducation , getMyData} from "../controllers/userController.js";
 import { isAuthenticated } from "../middlewares/authMiddleware.js";
+import { uploadFiles } from "../middlewares/multer.js";
 
 const userRouter = Router();
 
@@ -12,7 +13,7 @@ userRouter.post("/logout", isAuthenticated, logoutUser);
 // profile
 userRouter.get("/me", isAuthenticated, getMyData)
 userRouter.get("/profile", isAuthenticated, getUserProfile);
-userRouter.patch("/profile", isAuthenticated, updateUserProfile);
+userRouter.patch("/profile", isAuthenticated, uploadFiles.fields([{name: "resume", maxCount: 1}, {name: "profilePhoto", maxCount: 1}]), updateUserProfile);
 
 // profile - experience
 userRouter.post("/profile/experience", isAuthenticated, addNewExperience);

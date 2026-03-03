@@ -27,7 +27,22 @@ const pdfFileFilter = (req, file, cb) => {
   cb(null, true);
 };
 
-export const uploadCompanyLogo = multer({
+const combinedFileFilter = (req, file, cb) => {
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "application/pdf"
+  ];
+
+  if (!allowedTypes.includes(file.mimetype)) {
+    return cb(new Error("Only image and PDF files are allowed"), false);
+  }
+
+  cb(null, true);
+};
+
+export const uploadImage = multer({
   storage,
   fileFilter: imageFileFilter,
    limits: {
@@ -39,6 +54,14 @@ export const uploadResume = multer({
   storage,
   fileFilter: pdfFileFilter,
    limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
+
+export const uploadFiles = multer({
+  storage,
+  fileFilter: combinedFileFilter,
+  limits: {
     fileSize: 5 * 1024 * 1024,
   },
 });

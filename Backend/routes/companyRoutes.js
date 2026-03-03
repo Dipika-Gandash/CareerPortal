@@ -5,15 +5,15 @@ import { validateObjectId } from '../middlewares/validateObjectIdMiddleware.js';
 import { createCompany , getMyCompanies, getCompanyById , updateCompany, deleteCompany , getCompanyJobs} from '../controllers/companyController.js';
 import { createJob } from '../controllers/jobController.js';
 import { checkRecruiterStatus } from '../middlewares/checkRecruiterStatusMiddleware.js';
-import { uploadCompanyLogo } from '../middlewares/multer.js';
+import { uploadImage } from '../middlewares/multer.js';
 
 const companyRouter = Router();
 
-companyRouter.post('/create', isAuthenticated, isRecruiter, checkRecruiterStatus, uploadCompanyLogo.single("companyLogo"), createCompany);
+companyRouter.post('/create', isAuthenticated, isRecruiter, checkRecruiterStatus, uploadImage.single("companyLogo"), createCompany);
 companyRouter.get('/my', isAuthenticated, isRecruiter, getMyCompanies);
 
 companyRouter.get('/:companyId', isAuthenticated, isRecruiter, validateObjectId('companyId'), getCompanyById);
-companyRouter.patch('/:companyId', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), uploadCompanyLogo.single("companyLogo"), updateCompany);
+companyRouter.patch('/:companyId', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), uploadImage.single("companyLogo"), updateCompany);
 companyRouter.delete('/:companyId', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), deleteCompany);
 
 companyRouter.post('/:companyId/create-job', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), createJob);

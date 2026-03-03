@@ -1,5 +1,7 @@
 import User from "../models/userSchema.js";
 import mongoose from "mongoose";
+import cloudinary from "../config/cloudinary.js";
+import fs from "fs";
 
 export const registerUser = async (req, res) => {
   try {
@@ -151,6 +153,7 @@ export const getUserProfile = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        phoneNumber : user.phoneNumber,
         profile: user.profile,
       },
     });
@@ -172,6 +175,55 @@ export const updateUserProfile = async (req, res) => {
       "education",
     ];
     const updates = req.body;
+    const user = req.user;
+
+    if (req.files?.resume) {
+      const filePath = req.files.resume[0].path;
+
+      try {
+        if (user.profile.resumePublicId) {
+          await cloudinary.uploader.destroy(user.profile.resumePublicId);
+        }
+
+        const uploadFile = await cloudinary.uploader.upload(filePath, {
+          folder: "resumes",
+          resource_type: "raw",
+        });
+        user.profile.resume = uploadFile.secure_url;
+        user.profile.resumePublicId = uploadFile.public_id;
+
+        fs.unlinkSync(filePath);
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: "Resume update Failed !",
+        });
+      }
+    }
+
+    if (req.files?.profilePhoto) {
+      const ImagePath = req.files.profilePhoto[0].path;
+
+      try {
+        if (user.profile.profilePhotoPublicId) {
+          await cloudinary.uploader.destroy(user.profile.profilePhotoPublicId);
+        }
+
+        const updateProfile = await cloudinary.uploader.upload(ImagePath, {
+          folder: "profile_photos",
+        });
+
+        user.profile.profilePhoto = updateProfile.secure_url;
+        user.profile.profilePhotoPublicId = updateProfile.public_id;
+
+        fs.unlinkSync(ImagePath);
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: "Profile Photo update Failed !",
+        });
+      }
+    }
     const updateFields = Object.keys(updates);
 
     const isInvalidUpdate = updateFields.some((field) =>
@@ -181,11 +233,9 @@ export const updateUserProfile = async (req, res) => {
     if (isInvalidUpdate) {
       return res.status(400).json({
         success: false,
-        message: "You cannot update email, password or role from this route",
+        message: "You cannot update email, password or role",
       });
     }
-
-    const user = req.user;
 
     const ALLOWED_TOP_LEVEL_FIELDS = ["firstName", "lastName", "phoneNumber"];
 
@@ -216,13 +266,7 @@ export const updateUserProfile = async (req, res) => {
         ];
       }
 
-      const ALLOWED_PROFILE_FIELDS = [
-        "bio",
-        "gender",
-        "resume",
-        "resumeOriginalName",
-        "profilePhoto",
-      ];
+      const ALLOWED_PROFILE_FIELDS = ["bio", "gender"];
 
       ALLOWED_PROFILE_FIELDS.forEach((profileField) => {
         if (updates.profile[profileField] !== undefined) {
