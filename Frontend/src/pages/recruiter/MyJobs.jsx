@@ -9,7 +9,6 @@ const MyJobs = () => {
   const [loading, setLoading] = useState(true);
   const [totalJobs, setTotalJobs] = useState(0);
 
-
   useEffect(() => {
     const fetchMyJobs = async () => {
       try {

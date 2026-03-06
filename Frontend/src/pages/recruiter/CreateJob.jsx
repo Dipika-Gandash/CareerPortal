@@ -57,8 +57,7 @@ const CreateJob = () => {
       !jobFormData.salary.max ||
       !jobFormData.location ||
       !jobFormData.workMode ||
-      !jobFormData.jobType ||
-      !jobFormData.positions
+      !jobFormData.jobType
     ) {
       toast.error("Please fill all required fields");
       return;

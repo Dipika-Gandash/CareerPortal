@@ -100,10 +100,6 @@ const jobSchema = new mongoose.Schema(
       type: Number,
       min: [1, "Positions must be at least 1"],
       max: [1000, "Positions too high"],
-      validate: {
-        validator: Number.isInteger,
-        message: "Positions must be an integer",
-      },
       default: 1,
     },
 
