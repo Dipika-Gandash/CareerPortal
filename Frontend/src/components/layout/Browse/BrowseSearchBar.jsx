@@ -1,6 +1,4 @@
-import api from "@/api/axios";
 import React from "react";
-import toast from "react-hot-toast";
 
 const BrowseSearchBar = ({ filters , setFilters }) => {
  const handleKeywordChange = (e) => {
