@@ -45,7 +45,8 @@ const NavBar = () => {
                 <Link to="/">Home</Link>
               </li>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
-                {user.role === "jobseeker" ? "Browse Jobs" : "Post Job"}
+                <Link to="/browse">{user.role === "jobseeker" ? "Browse Jobs" : "Post Job"}</Link>
+           
               </li>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
                 {user.role === "jobseeker" ? "My Applications" : "My Jobs"}

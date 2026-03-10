@@ -6,17 +6,17 @@ import JobCard from "@/components/layout/JobCard";
 import useJobFilter from "@/customHooks/useJobFilter";
 
 const Browse = () => {
-   const {
-    filters,
-    setFilters,
-    jobs,
-    totalPages
-  } = useJobFilter();
+  const { filters, setFilters, jobs, totalPages, inputValues, setInputValues } = useJobFilter();
 
   return (
     <div className="min-h-screen">
       <div className="px-6 py-6 border-b">
-        <BrowseSearchBar filters={filters} setFilters={setFilters} />
+       <BrowseSearchBar 
+  filters={filters} 
+  setFilters={setFilters}
+  inputValues={inputValues}
+  setInputValues={setInputValues}
+/>
       </div>
 
       <div className="flex px-6 gap-8 mt-6">
