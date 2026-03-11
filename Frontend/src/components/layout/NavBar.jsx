@@ -49,7 +49,8 @@ const NavBar = () => {
            
               </li>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
-                {user.role === "jobseeker" ? "My Applications" : "My Jobs"}
+                <Link to={user.role === "jobseeker" ? "/my-applications" : "/recruiter/jobs"}>{user.role === "jobseeker" ? "My Applications" : "My Jobs"}</Link>
+                
               </li>
 
               <Popover>

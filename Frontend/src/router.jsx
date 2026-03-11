@@ -17,6 +17,7 @@ import AddExperience from "./pages/profile/AddExperience";
 import AddEducation from "./pages/profile/AddEducation";
 import ProfilePage from "./pages/profile/ProfilePage";
 import UpdateProfile from "./pages/profile/UpdateProfile";
+import MyApplications from "./pages/jobs/MyApplications";
 
 export const router = createBrowserRouter([
   {
@@ -41,30 +42,32 @@ export const router = createBrowserRouter([
       },
       {
         path: "jobs/:jobId/apply",
-        element: <JobDetails />
+        element: <JobDetails />,
+      },
+      {
+        path: "my-applications",
+        element: <MyApplications />,
       },
       {
         path: "profile",
         children: [
           {
             index: true,
-            element: <ProfilePage />
-
+            element: <ProfilePage />,
           },
           {
             path: "experience/add",
-            element: <AddExperience />
+            element: <AddExperience />,
           },
           {
             path: "education/add",
-            element: <AddEducation />
+            element: <AddEducation />,
           },
           {
             path: "update",
-            element: <UpdateProfile />
-          }
-        ]
-
+            element: <UpdateProfile />,
+          },
+        ],
       },
       {
         path: "recruiter",
@@ -87,21 +90,20 @@ export const router = createBrowserRouter([
           },
           {
             path: "companies/:companyId/create-job",
-            element: <CreateJob />
+            element: <CreateJob />,
           },
           {
             path: "companies/:companyId/jobs",
-            element: <CompanyJobs />
+            element: <CompanyJobs />,
           },
           {
             path: "my-jobs",
-            element: <MyJobs />
+            element: <MyJobs />,
           },
           {
             path: "jobs/:jobId",
-            element: <JobDetails />
-          }
-      
+            element: <JobDetails />,
+          },
         ],
       },
     ],
