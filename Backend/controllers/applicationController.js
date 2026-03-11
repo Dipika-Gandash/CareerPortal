@@ -3,9 +3,15 @@ import Job from "../models/jobSchema.js";
 
 export const applyJob = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const user = req.user;
+    const userId = user._id;
     const jobId = req.params.jobId;
-    // const { resume } = req.body;
+     if (!req.user.profile.resume) {
+      return res.status(400).json({
+        success: false,
+        message: "Please upload your resume in your profile first",
+      });
+    }
 
     const job = await Job.findById(jobId);
 
@@ -18,7 +24,7 @@ export const applyJob = async (req, res) => {
     
     const existingApplication = await Application.findOne({
       user: userId,
-      job: jobId,
+      job: jobId
     });
 
     if (existingApplication) {
@@ -31,6 +37,7 @@ export const applyJob = async (req, res) => {
     const newApplication = await Application.create({
       user: userId,
       job: jobId,
+      resume: req.user.profile.resume,
     });
 
     return res.status(201).json({

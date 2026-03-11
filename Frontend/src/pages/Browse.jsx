@@ -4,9 +4,12 @@ import FilterSidebar from "@/components/layout/Browse/FilterSidebar";
 import Pagination from "@/components/layout/Browse/Pagination";
 import JobCard from "@/components/layout/JobCard";
 import useJobFilter from "@/customHooks/useJobFilter";
+import Loader from "@/components/common/Loader";
 
 const Browse = () => {
   const { filters, setFilters, jobs, totalPages, inputValues, setInputValues } = useJobFilter();
+
+  if(!jobs || jobs.length === 0) return <Loader />;
 
   return (
     <div className="min-h-screen">

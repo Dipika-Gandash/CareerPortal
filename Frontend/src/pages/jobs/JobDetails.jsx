@@ -20,6 +20,7 @@ const JobDetails = () => {
   const { jobId } = useParams();
   const [jobDetails, setJobDetails] = useState("");
   const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false);
 
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
@@ -37,9 +38,8 @@ const JobDetails = () => {
     };
 
     fetchJobDetails();
-  }, []);
+  }, [jobId]);
 
- 
   const handleJobStatus = async (jobId, newStatus) => {
     try {
       const res = await api.patch(`/api/v1/job/${jobId}/status`, {
@@ -59,19 +59,33 @@ const JobDetails = () => {
   const handleDeleteJob = async () => {
     try {
       const res = await api.delete(`/api/v1/job/${jobId}`);
-      if(res?.data?.message) {
-        toast.success("Job deleted successfully")
+      if (res?.data?.message) {
+        toast.success("Job deleted successfully");
         navigate("/recruiter/my-jobs");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "");
     }
-  }
+  };
 
-   if (loading) {
-    return <Loader />
-  }
+  const handleApplyJob = async () => {
+    try {
+      setApplying(true);
+      const res = await api.post(`/api/v1/application/${jobId}/apply`);
+      if (res.data.success) {
+        toast.success("Applied successfully!");
+        navigate("/browse")
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to apply");
+    } finally {
+      setApplying(false);
+    }
+  };
 
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="max-w-5xl mx-auto mt-11 px-4">
@@ -143,9 +157,35 @@ const JobDetails = () => {
 
         <div className="pt-6 border-t flex gap-4">
           {user?.role === "jobseeker" && (
-            <button className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
-              Apply Now
-            </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
+                  Apply Now
+                </button>
+              </AlertDialogTrigger>
+
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Apply for {jobDetails?.title}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-800">
+                    {jobDetails?.company?.name} · {jobDetails?.location} — Your
+                    profile resume will be used for this application.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleApplyJob}
+                    disabled={applying}
+                  >
+                    {applying ? "Applying..." : "Confirm & Apply"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
 
           {user?.role === "recruiter" &&
@@ -190,35 +230,35 @@ const JobDetails = () => {
                   </AlertDialogContent>
                 </AlertDialog>
 
-               <AlertDialog>
-                           <AlertDialogTrigger asChild>
-                             <button className="px-4 py-2 rounded-xl bg-red-600 text-white cursor-pointer">
-                               Delete
-                             </button>
-                           </AlertDialogTrigger>
-               
-                           <AlertDialogContent>
-                             <AlertDialogHeader>
-                               <AlertDialogTitle>
-                                 Are you sure you want to delete this company?
-                               </AlertDialogTitle>
-                               <AlertDialogDescription className="text-gray-700">
-                                 This action cannot be undone. This will permanently delete
-                                 your company and all related jobs.
-                               </AlertDialogDescription>
-                             </AlertDialogHeader>
-               
-                             <AlertDialogFooter>
-                               <AlertDialogCancel>Cancel</AlertDialogCancel>
-                               <AlertDialogAction
-                                 onClick={handleDeleteJob}
-                                 className="bg-red-600 hover:bg-red-700"
-                               >
-                                 Delete
-                               </AlertDialogAction>
-                             </AlertDialogFooter>
-                           </AlertDialogContent>
-                         </AlertDialog>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <button className="px-4 py-2 rounded-xl bg-red-600 text-white cursor-pointer">
+                      Delete
+                    </button>
+                  </AlertDialogTrigger>
+
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you sure you want to delete this company?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-gray-700">
+                        This action cannot be undone. This will permanently
+                        delete your company and all related jobs.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteJob}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </>
             )}
         </div>

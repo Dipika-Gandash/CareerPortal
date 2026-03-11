@@ -40,6 +40,10 @@ export const router = createBrowserRouter([
         element: <Browse />,
       },
       {
+        path: "jobs/:jobId/apply",
+        element: <JobDetails />
+      },
+      {
         path: "profile",
         children: [
           {

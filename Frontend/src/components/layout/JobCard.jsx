@@ -9,7 +9,7 @@ const JobCard = ({ job }) => {
   const isRecruiter = user?.role === "recruiter";
 
   const handleClick = () => {
-    navigate(isRecruiter ? `/recruiter/jobs/${job._id}` : `/jobs/${job._id}`);
+    navigate(isRecruiter ? `/recruiter/jobs/${job._id}` : `/jobs/${job._id}/apply`);
   };
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300 border border-purple-300 p-4 flex flex-col justify-between w-75">
