@@ -218,3 +218,35 @@ export const updateApplicationStatus = async (req, res) => {
     });
   }
 };
+
+export const getRecruiterStats = async (req, res) => {
+  try {
+    const recruiterId = req.user._id;
+    const jobs = await Job.find({ postedBy: recruiterId });
+    const jobIds = jobs.map((job) => job._id);
+
+    const totalApplicants = await Application.countDocuments({
+      job: { $in: jobIds },
+    });
+
+    const totalHired = await Application.countDocuments({
+      job: { $in: jobIds },
+      status: "Hired",
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalJobs: jobs.length,
+        totalApplicants,
+        totalHired,
+      },
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch stats",
+    });
+  }
+};
