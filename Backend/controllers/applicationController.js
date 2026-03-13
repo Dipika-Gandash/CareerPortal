@@ -118,12 +118,7 @@ export const getAllApplicants = async (req, res) => {
     const job = await Job.findOne({
       _id: jobId,
       postedBy: recruiterId,
-    })
-      .select(
-        "title description location salary experienceLevel workMode jobType positions company",
-      )
-      .populate({ path: "company", select: "name logo" })
-      .lean();
+    }).lean();
 
     if (!job) {
       return res.status(404).json({
@@ -158,13 +153,12 @@ export const getAllApplicants = async (req, res) => {
       .populate({
         path: "user",
         select:
-          "firstName lastName phoneNumber profile.skills profile.education profile.experience profile.resume profile.resumeOriginalName",
+          "firstName lastName phoneNumber profile.skills profile.resume",
       })
       .lean();
 
     return res.status(200).json({
       success: true,
-      job,
       totalApplicants,
       page,
       totalPages,

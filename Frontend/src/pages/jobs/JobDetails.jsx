@@ -74,7 +74,7 @@ const JobDetails = () => {
       const res = await api.post(`/api/v1/application/${jobId}/apply`);
       if (res.data.success) {
         toast.success("Applied successfully!");
-        navigate("/browse")
+        navigate("/browse");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to apply");
@@ -259,6 +259,14 @@ const JobDetails = () => {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
+                <button
+                  onClick={() =>
+                    navigate(`/recruiter/jobs/${jobId}/applicants`)
+                  }
+                  className="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700"
+                >
+                  View Applicants
+                </button>
               </>
             )}
         </div>

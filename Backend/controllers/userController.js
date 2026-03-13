@@ -153,7 +153,7 @@ export const getUserProfile = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        phoneNumber : user.phoneNumber,
+        phoneNumber: user.phoneNumber,
         profile: user.profile,
       },
     });
@@ -188,6 +188,7 @@ export const updateUserProfile = async (req, res) => {
         const uploadFile = await cloudinary.uploader.upload(filePath, {
           folder: "resumes",
           resource_type: "raw",
+          access_mode: "public",
         });
         user.profile.resume = uploadFile.secure_url;
         user.profile.resumePublicId = uploadFile.public_id;

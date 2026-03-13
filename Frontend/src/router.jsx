@@ -18,6 +18,7 @@ import AddEducation from "./pages/profile/AddEducation";
 import ProfilePage from "./pages/profile/ProfilePage";
 import UpdateProfile from "./pages/profile/UpdateProfile";
 import MyApplications from "./pages/jobs/MyApplications";
+import MyApplicants from "./pages/recruiter/MyApplicants";
 
 export const router = createBrowserRouter([
   {
@@ -103,6 +104,10 @@ export const router = createBrowserRouter([
           {
             path: "jobs/:jobId",
             element: <JobDetails />,
+          },
+          {
+            path: "jobs/:jobId/applicants",
+            element: <MyApplicants />,
           },
         ],
       },
