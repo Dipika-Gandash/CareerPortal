@@ -37,7 +37,7 @@ const MyCompanies = () => {
         My Companies
       </h1>
       <div className="space-y-6">
-        { companies.length === 0 ? (
+        { !companies ? (
           <div className="text-center">
             <p className="text-xl text-black font-semibold">
               {" "}

@@ -1,5 +1,6 @@
 import Application from "../models/applicationSchema.js";
 import Job from "../models/jobSchema.js";
+import Company from "../models/companySchema.js";
 
 export const applyJob = async (req, res) => {
   try {
@@ -234,10 +235,13 @@ export const getRecruiterStats = async (req, res) => {
       status: "Hired",
     });
 
+    const totalCompanies = await Company.countDocuments({ createdBy: recruiterId });
+
     return res.status(200).json({
       success: true,
       data: {
         totalJobs: jobs.length,
+        totalCompanies,
         totalApplicants,
         totalHired,
       },

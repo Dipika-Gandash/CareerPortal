@@ -19,8 +19,22 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import UpdateProfile from "./pages/profile/UpdateProfile";
 import MyApplications from "./pages/jobs/MyApplications";
 import MyApplicants from "./pages/recruiter/MyApplicants";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminCompanies from "./pages/admin/AdminCompanies";
+import AdminJobs from "./pages/admin/AdminJobs";
+import AdminRecruiters from "./pages/admin/AdminRecruiters";
 
 export const router = createBrowserRouter([
+  {
+  path: "/admin",
+  element: <AdminLayout />,
+  children: [
+    // { index: true, element: <AdminDashboard /> },
+    { path: "recruiters", element: <AdminRecruiters /> },
+    { path: "companies", element: <AdminCompanies /> },
+    { path: "jobs", element: <AdminJobs /> },
+  ],
+},
   {
     path: "/",
     element: <App />,
@@ -49,6 +63,7 @@ export const router = createBrowserRouter([
         path: "my-applications",
         element: <MyApplications />,
       },
+     
       {
         path: "profile",
         children: [

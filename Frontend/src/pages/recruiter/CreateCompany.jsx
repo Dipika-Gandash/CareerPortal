@@ -15,6 +15,7 @@ const CreateCompany = () => {
     location: "",
     companyLogo: null,
   });
+    const [creating, setCreating] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,6 +29,8 @@ const CreateCompany = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (creating) return; 
+  setCreating(true);
     try {
       const formData = new FormData();
       formData.append("name", companyFormData.name);
@@ -44,6 +47,7 @@ const CreateCompany = () => {
       console.log(res.data);
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
+      setCreating(false);
     }
   };
   return (
@@ -113,8 +117,8 @@ const CreateCompany = () => {
             />
           </div>
 
-          <Button type="submit" className="w-full mt-4">
-            Create Company
+          <Button disabled={creating} type="submit" className="w-full mt-4">
+           {creating ? "Creating Company..." : "Create Company"}
           </Button>
         </form>
       </div>
