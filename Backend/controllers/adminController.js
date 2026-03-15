@@ -76,13 +76,10 @@ export const getAllJobsAdmin = async (req, res) => {
   try {
     const {
       keyword,
+      companyName,
       location,
-      jobType,
-      workMode,
-      experienceLevel,
-      companyId,
-      recruiterId,
       status,
+      sortBy = "newest",
       page = 1,
       limit = 10,
     } = req.query;
@@ -95,31 +92,57 @@ export const getAllJobsAdmin = async (req, res) => {
 
     if (keyword) filter.title = { $regex: keyword, $options: "i" };
     if (location) filter.location = { $regex: location, $options: "i" };
-    if (jobType) filter.jobType = jobType;
-    if (workMode) filter.workMode = workMode;
-    if (experienceLevel) filter.experienceLevel = experienceLevel;
-    if (companyId) filter.company = companyId;
-    if (recruiterId) filter.postedBy = recruiterId;
     if (status) filter.status = status;
 
+    if (companyName) {
+      const companies = await Company.find({
+        name: { $regex: companyName, $options: "i" },
+      }).select("_id");
+
+      if (companies.length === 0) {
+        return res.status(200).json({
+          success: true,
+          totalJobs: 0,
+          currentPage: pageNumber,
+          totalPages: 0,
+          jobs: [],
+        });
+      }
+
+      filter.company = { $in: companies.map((c) => c._id) };
+    }
+
+    const sortOptions = {
+      newest: { createdAt: -1 },
+      oldest: { createdAt: 1 },
+    };
+    const sort = sortOptions[sortBy] || { createdAt: -1 };
+
     const jobs = await Job.find(filter)
-      .populate("company", "name location")
+      .populate("company", "name location companyLogo")
       .populate("postedBy", "firstName lastName")
-      .sort({ createdAt: -1 })
+      .sort(sort)
       .skip(skip)
       .limit(limitNumber);
 
-    const totalJobs = await Job.countDocuments(filter);
+    const jobsWithStats = await Promise.all(
+      jobs.map(async (job) => {
+        const applicationsCount = await Application.countDocuments({
+          job: job._id,
+        });
+        return { ...job.toObject(), applicationsCount };
+      })
+    );
 
+    const totalJobs = await Job.countDocuments(filter);
     return res.status(200).json({
       success: true,
       totalJobs,
       currentPage: pageNumber,
       totalPages: Math.ceil(totalJobs / limitNumber),
-      jobs,
+      jobs: jobsWithStats,
     });
   } catch (error) {
-    console.error("Admin getAllJobs error:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
