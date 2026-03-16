@@ -3,6 +3,44 @@ import Job from "../models/jobSchema.js";
 import User from "../models/userSchema.js";
 import Application from "../models/applicationSchema.js";
 
+export const getAdminDashboard = async (req, res) => {
+  try {
+    const [
+      totalUsers,
+      totalRecruiters,
+      totalJobs,
+      totalCompanies,
+      totalApplications,
+      recentJobs,
+      recentRecruiters,
+    ] = await Promise.all([
+      User.countDocuments({ role: "user" }),
+      User.countDocuments({ role: "recruiter" }),
+      Job.countDocuments(),
+      Company.countDocuments(),
+      Application.countDocuments(),
+      Job.find().sort({ createdAt: -1 }).limit(5)
+        .populate("company", "name companyLogo"),
+      User.find({ role: "recruiter" }).sort({ createdAt: -1 }).limit(5)
+        .select("firstName lastName email createdAt"),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      stats: {
+        totalUsers,
+        totalRecruiters,
+        totalJobs,
+        totalCompanies,
+        totalApplications,
+      },
+      recentJobs,
+      recentRecruiters,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 export const getAllCompaniesAdmin = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;

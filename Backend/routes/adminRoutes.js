@@ -8,10 +8,18 @@ import {
   getAllJobsAdmin,
   deleteJobAdmin,
   getRecruiters,
-  updateRecruiterStatus
+  updateRecruiterStatus,
+  getAdminDashboard,
 } from "../controllers/adminController.js";
 
 const adminRouter = Router();
+
+adminRouter.get(
+  "/admin/dashboard",
+  isAuthenticated,
+  isAdmin,
+  getAdminDashboard,
+);
 
 adminRouter.get(
   "/all-companies",
@@ -36,6 +44,12 @@ adminRouter.delete(
 );
 
 adminRouter.get("/recruiters", isAuthenticated, isAdmin, getRecruiters);
-adminRouter.patch("/recruiters/:recruiterId/status", isAuthenticated, isAdmin, validateObjectId('recruiterId'), updateRecruiterStatus);
+adminRouter.patch(
+  "/recruiters/:recruiterId/status",
+  isAuthenticated,
+  isAdmin,
+  validateObjectId("recruiterId"),
+  updateRecruiterStatus,
+);
 
 export default adminRouter;
