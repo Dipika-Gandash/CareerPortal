@@ -5,6 +5,7 @@ import AdminJobSearchBar from "@/components/layout/AdminJobSearchBar";
 import toast from "react-hot-toast";
 import Loader from "@/components/common/Loader";
 import api from "@/api/axios";
+import Pagination from "./Pagination";
 
 const AdminJobs = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,11 +21,14 @@ const AdminJobs = () => {
     status: searchParams.get("status") || "",
     sortBy: searchParams.get("sortBy") || "newest",
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const [debouncedFilters, setDebouncedFilters] = useState(filters);
 
   useEffect(() => {
     const t = setTimeout(() => {
+      setCurrentPage(1);
       setDebouncedFilters(filters);
     }, 500);
     return () => clearTimeout(t);
@@ -33,10 +37,13 @@ const AdminJobs = () => {
   useEffect(() => {
     const params = {};
     if (debouncedFilters.keyword) params.keyword = debouncedFilters.keyword;
-    if (debouncedFilters.companyName) params.companyName = debouncedFilters.companyName;
+    if (debouncedFilters.companyName)
+      params.companyName = debouncedFilters.companyName;
     if (debouncedFilters.location) params.location = debouncedFilters.location;
     if (debouncedFilters.status) params.status = debouncedFilters.status;
-    if (debouncedFilters.sortBy !== "newest") params.sortBy = debouncedFilters.sortBy;
+    if (debouncedFilters.sortBy !== "newest")
+      params.sortBy = debouncedFilters.sortBy;
+    if (currentPage > 1) params.page = currentPage;
     setSearchParams(params);
   }, [debouncedFilters]);
 
@@ -45,15 +52,22 @@ const AdminJobs = () => {
       setLoading(true);
       try {
         const params = new URLSearchParams();
-        if (debouncedFilters.keyword) params.append("keyword", debouncedFilters.keyword);
-        if (debouncedFilters.companyName) params.append("companyName", debouncedFilters.companyName);
-        if (debouncedFilters.location) params.append("location", debouncedFilters.location);
-        if (debouncedFilters.status) params.append("status", debouncedFilters.status);
+        if (debouncedFilters.keyword)
+          params.append("keyword", debouncedFilters.keyword);
+        if (debouncedFilters.companyName)
+          params.append("companyName", debouncedFilters.companyName);
+        if (debouncedFilters.location)
+          params.append("location", debouncedFilters.location);
+        if (debouncedFilters.status)
+          params.append("status", debouncedFilters.status);
         params.append("sortBy", debouncedFilters.sortBy);
+        params.append("page", currentPage);
+        params.append("limit", 10);
 
         const res = await api.get(`/api/v1/admin/jobs?${params.toString()}`);
         setJobs(res.data.jobs);
         setTotalJobs(res.data.totalJobs);
+        setTotalPages(res.data.totalPages);
       } catch (error) {
         toast.error(error.response?.data?.message || "Something went wrong");
       } finally {
@@ -61,7 +75,7 @@ const AdminJobs = () => {
       }
     };
     fetchJobs();
-  }, [debouncedFilters]);
+  }, [debouncedFilters, currentPage]);
 
   const handleDelete = async (jobId) => {
     if (deleting) return;
@@ -129,6 +143,13 @@ const AdminJobs = () => {
           </div>
         )}
 
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            totalPages={totalPages}
+          />
+        )}
       </div>
     </div>
   );
