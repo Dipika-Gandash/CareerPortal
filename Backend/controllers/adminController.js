@@ -131,7 +131,7 @@ export const getAllJobsAdmin = async (req, res) => {
           job: job._id,
         });
         return { ...job.toObject(), applicationsCount };
-      })
+      }),
     );
 
     const totalJobs = await Job.countDocuments(filter);
@@ -186,19 +186,33 @@ export const getRecruiters = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const recruiters = await User.find({ role: "recruiter" })
-      .select("firstName lastName email profile.bio isBlocked")
+      .select("firstName lastName email profile.bio profile.profilePhoto isBlocked createdAt")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
 
     const totalRecruiters = await User.countDocuments({ role: "recruiter" });
 
+    const recruitersWithStats = await Promise.all(
+      recruiters.map(async (recruiter) => {
+        const totalCompanies = await Company.countDocuments({
+          userId: recruiter._id,
+        });
+        const totalJobs = await Job.countDocuments({ postedBy: recruiter._id });
+        return {
+          ...recruiter.toObject(),
+          totalCompanies,
+          totalJobs,
+        };
+      }),
+    );
+
     return res.status(200).json({
       success: true,
       totalRecruiters,
       currentPage: page,
       totalPages: Math.ceil(totalRecruiters / limit),
-      recruiters,
+      recruiters: recruitersWithStats,
     });
   } catch (error) {
     console.error("Get recruiters error:", error);
