@@ -14,15 +14,15 @@ export const getAdminDashboard = async (req, res) => {
       recentJobs,
       recentRecruiters,
     ] = await Promise.all([
-      User.countDocuments({ role: "user" }),
+      User.countDocuments({ role: "jobseeker" }),
       User.countDocuments({ role: "recruiter" }),
       Job.countDocuments(),
       Company.countDocuments(),
       Application.countDocuments(),
-      Job.find().sort({ createdAt: -1 }).limit(5)
+      Job.find().sort({ createdAt: -1 }).limit(4)
         .populate("company", "name companyLogo"),
-      User.find({ role: "recruiter" }).sort({ createdAt: -1 }).limit(5)
-        .select("firstName lastName email createdAt"),
+      User.find({ role: "recruiter" }).sort({ createdAt: -1 }).limit(4)
+        .select("firstName lastName email profile.profilePhoto createdAt"),
     ]);
 
     return res.status(200).json({

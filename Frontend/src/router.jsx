@@ -23,13 +23,14 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminJobs from "./pages/admin/AdminJobs";
 import AdminRecruiters from "./pages/admin/AdminRecruiters";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 export const router = createBrowserRouter([
   {
   path: "/admin",
   element: <AdminLayout />,
   children: [
-    // { index: true, element: <AdminDashboard /> },
+    { index: true, element: <AdminDashboard /> },
     { path: "recruiters", element: <AdminRecruiters /> },
     { path: "companies", element: <AdminCompanies /> },
     { path: "jobs", element: <AdminJobs /> },

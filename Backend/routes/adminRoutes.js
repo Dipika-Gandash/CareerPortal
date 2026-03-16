@@ -15,7 +15,7 @@ import {
 const adminRouter = Router();
 
 adminRouter.get(
-  "/admin/dashboard",
+  "/dashboard",
   isAuthenticated,
   isAdmin,
   getAdminDashboard,
