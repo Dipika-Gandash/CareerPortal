@@ -25,7 +25,6 @@ const CreateJob = () => {
     location: "",
     workMode: "Onsite",
     jobType: "",
-    positions: "",
     company: "",
   });
   const [creatingJob, setCreatingJob] = useState(false);
@@ -252,18 +251,6 @@ const CreateJob = () => {
                 ),
               )}
             </RadioGroup>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="positions">Number of Positions</Label>
-            <Input
-              id="positions"
-              name="positions"
-              type="number"
-              placeholder="Enter number of openings"
-              value={jobFormData.positions}
-              onChange={handleJobData}
-            />
           </div>
 
           <div className="text-center pt-4 flex  gap-4 justify-center">

@@ -96,13 +96,6 @@ const jobSchema = new mongoose.Schema(
       required: [true, "Job type is required"],
     },
 
-    positions: {
-      type: Number,
-      min: [1, "Positions must be at least 1"],
-      max: [1000, "Positions too high"],
-      default: 1,
-    },
-
     status: {
       type: String,
       enum: {

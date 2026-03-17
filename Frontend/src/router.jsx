@@ -25,6 +25,7 @@ import AdminCompanies from "./pages/admin/AdminCompanies";
 import AdminJobs from "./pages/admin/AdminJobs";
 import AdminRecruiters from "./pages/admin/AdminRecruiters";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import NotFound from "./pages/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
       { path: "recruiters", element: <AdminRecruiters /> },
       { path: "companies", element: <AdminCompanies /> },
       { path: "jobs", element: <AdminJobs /> },
+       { path: "*", element: <NotFound /> }
     ],
   },
   {
@@ -62,7 +64,7 @@ export const router = createBrowserRouter([
         element: <Browse />,
       },
       {
-        path: "jobs/:jobId",
+        path: "jobs/:jobId/apply",
         element: <JobDetails />,
       },
       {
@@ -171,6 +173,14 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: "jobs/:jobId",
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <JobDetails />,
+              </ProtectedRoutes>
+            )
+          },
+          {
             path: "jobs/:jobId/applicants",
             element: (
               <ProtectedRoutes allowedRoles={["recruiter"]}>
@@ -180,6 +190,10 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: "*",
+        element: <NotFound />
+      }
     ],
   },
 ]);

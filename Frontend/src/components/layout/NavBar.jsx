@@ -23,7 +23,7 @@ const NavBar = () => {
   const handleLogOut = async () => {
     try {
       await api.post("/api/v1/user/logout");
-      dispatch(logOutUser())
+      dispatch(logOutUser());
       toast.success("Logout Successfully");
       navigate("/login");
     } catch (error) {
@@ -45,12 +45,26 @@ const NavBar = () => {
                 <Link to="/">Home</Link>
               </li>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
-                <Link to="/browse">{user.role === "jobseeker" ? "Browse Jobs" : "Post Job"}</Link>
-           
+                <Link
+                  to={
+                    user.role === "jobseeker" ? "/browse" : "/recruiter/my-jobs"
+                  }
+                >
+                  {user.role === "jobseeker" ? "Browse Jobs" : "My Jobs"}
+                </Link>
               </li>
               <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
-                <Link to={user.role === "jobseeker" ? "/my-applications" : "/recruiter/jobs"}>{user.role === "jobseeker" ? "My Applications" : "My Jobs"}</Link>
-                
+                <Link
+                  to={
+                    user.role === "jobseeker"
+                      ? "/my-applications"
+                      : "/recruiter/companies"
+                  }
+                >
+                  {user.role === "jobseeker"
+                    ? "My Applications"
+                    : "My Companies"}
+                </Link>
               </li>
 
               <Popover>
@@ -69,7 +83,10 @@ const NavBar = () => {
                     <p className="cursor-pointer text-sm hover:text-indigo-600">
                       Applications
                     </p>
-                    <button className="cursor-pointer text-sm bg-red-500 text-white px-4 py-2 rounded-md" onClick={handleLogOut}>
+                    <button
+                      className="cursor-pointer text-sm bg-red-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleLogOut}
+                    >
                       Logout
                     </button>
                   </div>
@@ -101,14 +118,32 @@ const NavBar = () => {
           <ul className="flex flex-col gap-4">
             {user ? (
               <>
-                <li className="font-medium">
+                <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
                   <Link to="/">Home</Link>
                 </li>
-                <li className="font-medium">
-                  {user.role === "jobseeker" ? "Browse Jobs" : "Post Job"}
+                <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
+                  <Link
+                    to={
+                      user.role === "jobseeker"
+                        ? "/browse"
+                        : "/recruiter/my-jobs"
+                    }
+                  >
+                    {user.role === "jobseeker" ? "Browse Jobs" : "My Jobs"}
+                  </Link>
                 </li>
-                <li className="font-medium">
-                  {user.role === "jobseeker" ? "My Applications" : "My Jobs"}
+                <li className="cursor-pointer text-[18px] font-medium hover:text-indigo-600">
+                  <Link
+                    to={
+                      user.role === "jobseeker"
+                        ? "/my-applications"
+                        : "/recruiter/companies"
+                    }
+                  >
+                    {user.role === "jobseeker"
+                      ? "My Applications"
+                      : "My Companies"}
+                  </Link>
                 </li>
                 <Button variant="outline" className="w-full">
                   Profile

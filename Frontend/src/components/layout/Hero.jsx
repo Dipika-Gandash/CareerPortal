@@ -26,10 +26,10 @@ const Hero = () => {
       heading = `Discover Talent. Build Exceptional Teams.`;
       subheading = "Post jobs, connect with the best candidates, and make smarter hiring decisions — faster, easier, better.";
       primaryBtn = "Post a Job";
-      secondaryBtn = "Manage Applicants";
+      secondaryBtn = "My Companies";
       image = "recruiterImage.jpg";
-      primaryLink = "/postJob";
-      secondaryLink= "/manageApplicants"
+      primaryLink = "/recruiter/companies";
+      secondaryLink= "/recruiter/companies"
     }
   }
 

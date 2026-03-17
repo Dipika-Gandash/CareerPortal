@@ -130,13 +130,7 @@ const JobDetails = () => {
             <span className="font-semibold">Job Type:</span>{" "}
             {jobDetails?.jobType}
           </div>
-
-          {jobDetails?.positions && (
-            <div>
-              <span className="font-semibold">Open Positions:</span>{" "}
-              {jobDetails?.positions}
-            </div>
-          )}
+          
         </div>
 
         <div>
