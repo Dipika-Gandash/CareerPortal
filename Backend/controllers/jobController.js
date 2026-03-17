@@ -15,7 +15,6 @@ export const createJob = async (req, res) => {
       location,
       workMode,
       jobType,
-      positions,
     } = req.body;
 
     const company = await Company.findOne({
@@ -91,7 +90,6 @@ export const createJob = async (req, res) => {
       location,
       workMode,
       jobType,
-      positions,
       company: companyId,
       postedBy: recruiterId,
     });
