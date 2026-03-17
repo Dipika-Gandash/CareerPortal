@@ -156,6 +156,16 @@ const JobDetails = () => {
         </div>
 
         <div className="pt-6 border-t flex gap-4">
+          {!user && (
+            <button
+              onClick={() =>
+                navigate("/login", { state: { from: `/jobs/${jobId}/apply` } })
+              }
+              className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition"
+            >
+              Login to Apply
+            </button>
+          )}
           {user?.role === "jobseeker" && (
             <AlertDialog>
               <AlertDialogTrigger asChild>

@@ -21,24 +21,43 @@ const WhyChooseUs = ({ role }) => {
             desc: "Discover opportunities that match your skills.",
           },
         ]
-      : [
-          {
-            title: "Post Jobs Easily",
-            desc: "Create and publish job listings in just a few clicks.",
-          },
-          {
-            title: "Manage Applicants",
-            desc: "Track, review, and shortlist candidates from your dashboard.",
-          },
-          {
-            title: "Find Top Talent",
-            desc: "Connect with skilled professionals that match your requirements.",
-          },
-          {
-            title: "Efficient Hiring Process",
-            desc: "Streamline your recruitment workflow with smart tools.",
-          },
-        ];
+      : role === "recruiter"
+        ? [
+            {
+              title: "Post Jobs Easily",
+              desc: "Create and publish job listings in just a few clicks.",
+            },
+            {
+              title: "Manage Applicants",
+              desc: "Track, review, and shortlist candidates from your dashboard.",
+            },
+            {
+              title: "Find Top Talent",
+              desc: "Connect with skilled professionals that match your requirements.",
+            },
+            {
+              title: "Efficient Hiring Process",
+              desc: "Streamline your recruitment workflow with smart tools.",
+            },
+          ]
+        : [
+            {
+              title: "Find Your Dream Job",
+              desc: "Search thousands of jobs across all industries and locations.",
+            },
+            {
+              title: "Top Companies",
+              desc: "Connect with verified companies hiring right now.",
+            },
+            {
+              title: "Easy to Use",
+              desc: "Simple and fast — create an account and start applying in minutes.",
+            },
+            {
+              title: "Free Forever",
+              desc: "No hidden fees. Job searching and posting is completely free.",
+            },
+          ];
   return (
     <div className="mt-11 flex flex-col items-center px-4">
       <h1 className=" text-2xl md:text-3xl font-bold text-center">

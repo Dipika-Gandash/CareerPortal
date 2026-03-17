@@ -12,6 +12,13 @@ const HeroPage = () => {
   return (
     <div>
       <Hero />
+      {!user && (
+        <>
+          <SearchBar />
+          <FeaturedJobs />
+          <Categories />
+        </>
+      )}
       {user?.role === "jobseeker" && (
         <>
           <SearchBar />
@@ -20,8 +27,7 @@ const HeroPage = () => {
         </>
       )}
       {user?.role === "recruiter" && <RecruiterCTA />}
-      <WhyChooseUs role={user?.role}/>
-    
+      <WhyChooseUs role={user?.role} />
     </div>
   );
 };

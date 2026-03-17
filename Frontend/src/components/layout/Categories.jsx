@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 const categories = [
   "Frontend",
@@ -13,11 +12,6 @@ const categories = [
 ];
 
 const Categories = () => {
-  const navigate = useNavigate();
-
-  const handleCategoryClick = (category) => {
-    navigate(`/browse?keyword=${category.toLowerCase()}`);
-  };
 
   return (
     <div className="mt-11 flex flex-col items-center">
@@ -29,7 +23,6 @@ const Categories = () => {
         {categories.map((cat, index) => (
           <div
             key={index}
-            onClick={() => handleCategoryClick(cat)}
             className="cursor-pointer border border-purple-400 rounded-lg py-4 text-center font-medium hover:bg-purple-700 hover:text-white transition-all duration-300"
           >
             {cat}

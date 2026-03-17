@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "@/api/axios";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -11,13 +11,17 @@ import { setUser } from "@/store/authSlice";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loggingIn, setLoggingIn] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoggingIn(true);
       const { data } = await api.post("/api/v1/user/login", {
         email,
         password,
@@ -28,11 +32,11 @@ const Login = () => {
         toast.success("Login successfully");
         if (data.user.role === "admin") {
           navigate("/admin/dashboard");
+        } else if (data.user.role === "recruiter") {
+          navigate("/", { replace: true }); 
         } else {
-          navigate("/");
+          navigate(from, { replace: true }); 
         }
-
-        console.log(data);
       } else {
         throw new Error(data.message);
       }
@@ -42,6 +46,8 @@ const Login = () => {
           error.message ||
           "Something went wrong",
       );
+    } finally {
+      setLoggingIn(false);
     }
   };
 
@@ -85,7 +91,10 @@ const Login = () => {
               Forgot password?
             </span>
           </div> */}
-          <Button className="w-full">Login</Button>
+          <Button diabled={loggingIn} className="w-full">
+            {" "}
+            {loggingIn ? "Logging in..." : "Login"}
+          </Button>
 
           <p className="text-center text-sm text-gray-600">
             Don’t have an account?{" "}

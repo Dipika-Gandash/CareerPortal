@@ -7,9 +7,9 @@ import { checkRecruiterStatus } from '../middlewares/checkRecruiterStatusMiddlew
 
 const jobRouter = Router();
 
-jobRouter.get('/allJobs', isAuthenticated, getAllJobs);
+jobRouter.get('/allJobs', getAllJobs);
 jobRouter.get('/my-jobs', isAuthenticated, isRecruiter, getRecruiterJobs);
-jobRouter.get('/:jobId', isAuthenticated, validateObjectId('jobId'), getJobById);
+jobRouter.get('/:jobId', validateObjectId('jobId'), getJobById);
 jobRouter.patch('/:jobId/status', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('jobId'), updateJobStatus);
 jobRouter.delete('/:jobId', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('jobId'), deleteJob)
 
