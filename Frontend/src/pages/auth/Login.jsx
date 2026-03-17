@@ -91,7 +91,7 @@ const Login = () => {
               Forgot password?
             </span>
           </div> */}
-          <Button diabled={loggingIn} className="w-full">
+          <Button disabled={loggingIn} className="w-full">
             {" "}
             {loggingIn ? "Logging in..." : "Login"}
           </Button>
@@ -99,7 +99,7 @@ const Login = () => {
           <p className="text-center text-sm text-gray-600">
             Don’t have an account?{" "}
             <span className="cursor-pointer font-medium text-indigo-600 hover:underline">
-              <Link to="/signup">Sign up</Link>
+              <Link to="/signup" state={{ from }} replace>Sign up</Link>
             </span>
           </p>
         </form>

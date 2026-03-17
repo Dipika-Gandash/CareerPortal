@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate , useLocation } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import api from "../../api/axios.js";
 import toast from "react-hot-toast";
@@ -16,6 +16,9 @@ const SignUp = () => {
     role: "jobseeker",
     password: "",
   });
+  const [signingUp, setSigningUp] = useState(false);
+  const location = useLocation();
+  const from = location.state?.from || "/";
 
   const handleChange = (e) => {
     setFormData({
@@ -29,12 +32,15 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
+      setSigningUp(true);
       const res = await api.post("/api/v1/user/register", formData);
       toast.success("Account created successfully")
-      navigate("/login")
+     navigate("/login", { state: { from }, replace: true })
       
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setSigningUp(false);
     }
   }
   return (
@@ -148,12 +154,12 @@ const SignUp = () => {
             />
           </div>
 
-          <Button className="w-full">SignUp</Button>
+          <Button disabled={signingUp} className="w-full">{signingUp ? "Signing Up...." : "Sign Up" }</Button>
 
           <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
             <span className="cursor-pointer font-medium text-indigo-600 hover:underline">
-              <Link to="/login">Login</Link>
+              <Link to="/login" state={{ from }} replace>Login</Link>
             </span>
           </p>
         </form>
