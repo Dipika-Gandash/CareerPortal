@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate , useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import api from "../../api/axios.js";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const SignUp = () => {
+  const user = useSelector((store) => store.auth.user);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,6 +21,13 @@ const SignUp = () => {
   const [signingUp, setSigningUp] = useState(false);
   const location = useLocation();
   const from = location.state?.from || "/";
+  const navigate = useNavigate();
+
+  if (user) {
+    if (user.role === "admin")
+    return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/" replace />;
+  }
 
   const handleChange = (e) => {
     setFormData({
@@ -27,22 +36,20 @@ const SignUp = () => {
     });
   };
 
-  const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
+    try {
       setSigningUp(true);
-      const res = await api.post("/api/v1/user/register", formData);
-      toast.success("Account created successfully")
-     navigate("/login", { state: { from }, replace: true })
-      
+      await api.post("/api/v1/user/register", formData);
+      toast.success("Account created successfully");
+      navigate("/login", { state: { from }, replace: true });
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       setSigningUp(false);
     }
-  }
+  };
+
   return (
     <div className="flex mt-9 items-center justify-center px-4">
       <div className="w-full max-w-md rounded-xl border bg-white shadow-md p-6 sm:p-8 border-purple-900">
@@ -154,12 +161,16 @@ const SignUp = () => {
             />
           </div>
 
-          <Button disabled={signingUp} className="w-full">{signingUp ? "Signing Up...." : "Sign Up" }</Button>
+          <Button disabled={signingUp} className="w-full">
+            {signingUp ? "Signing Up...." : "Sign Up"}
+          </Button>
 
           <p className="text-center text-sm text-gray-600">
             Already have an account?{" "}
             <span className="cursor-pointer font-medium text-indigo-600 hover:underline">
-              <Link to="/login" state={{ from }} replace>Login</Link>
+              <Link to="/login" state={{ from }} replace>
+                Login
+              </Link>
             </span>
           </p>
         </form>

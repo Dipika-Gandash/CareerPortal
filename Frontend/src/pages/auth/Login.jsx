@@ -2,21 +2,28 @@ import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 import api from "@/api/axios";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/store/authSlice";
+import { useSelector } from "react-redux";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/";
+
+  const user = useSelector((store) => store.auth.user);
+  if (user) {
+    if (user.role === "admin")
+      return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,9 +40,9 @@ const Login = () => {
         if (data.user.role === "admin") {
           navigate("/admin/dashboard");
         } else if (data.user.role === "recruiter") {
-          navigate("/", { replace: true }); 
+          navigate("/", { replace: true });
         } else {
-          navigate(from, { replace: true }); 
+          navigate(from, { replace: true });
         }
       } else {
         throw new Error(data.message);
@@ -99,7 +106,9 @@ const Login = () => {
           <p className="text-center text-sm text-gray-600">
             Don’t have an account?{" "}
             <span className="cursor-pointer font-medium text-indigo-600 hover:underline">
-              <Link to="/signup" state={{ from }} replace>Sign up</Link>
+              <Link to="/signup" state={{ from }} replace>
+                Sign up
+              </Link>
             </span>
           </p>
         </form>
