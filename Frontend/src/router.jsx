@@ -1,5 +1,6 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
+import ProtectedRoutes from "./components/common/ProtectedRoutes";
 import App from "./App";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
@@ -27,15 +28,19 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 
 export const router = createBrowserRouter([
   {
-  path: "/admin",
-  element: <AdminLayout />,
-  children: [
-    { index: true, element: <AdminDashboard /> },
-    { path: "recruiters", element: <AdminRecruiters /> },
-    { path: "companies", element: <AdminCompanies /> },
-    { path: "jobs", element: <AdminJobs /> },
-  ],
-},
+    path: "/admin",
+    element: (
+      <ProtectedRoutes allowedRoles={["admin"]}>
+        <AdminLayout />
+      </ProtectedRoutes>
+    ),
+    children: [
+      { index: true, element: <AdminDashboard /> },
+      { path: "recruiters", element: <AdminRecruiters /> },
+      { path: "companies", element: <AdminCompanies /> },
+      { path: "jobs", element: <AdminJobs /> },
+    ],
+  },
   {
     path: "/",
     element: <App />,
@@ -57,32 +62,52 @@ export const router = createBrowserRouter([
         element: <Browse />,
       },
       {
-        path: "jobs/:jobId/apply",
+        path: "jobs/:jobId",
         element: <JobDetails />,
       },
       {
         path: "my-applications",
-        element: <MyApplications />,
+        element: (
+          <ProtectedRoutes allowedRoles={["jobseeker"]}>
+            <MyApplications />
+          </ProtectedRoutes>
+        ),
       },
-     
+
       {
         path: "profile",
         children: [
           {
             index: true,
-            element: <ProfilePage />,
+            element: (
+              <ProtectedRoutes>
+                <ProfilePage />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "experience/add",
-            element: <AddExperience />,
+            element: (
+              <ProtectedRoutes>
+                <AddExperience />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "education/add",
-            element: <AddEducation />,
+            element: (
+              <ProtectedRoutes>
+                <AddEducation />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "update",
-            element: <UpdateProfile />,
+            element: (
+              <ProtectedRoutes>
+                <UpdateProfile />
+              </ProtectedRoutes>
+            ),
           },
         ],
       },
@@ -91,39 +116,67 @@ export const router = createBrowserRouter([
         children: [
           {
             path: "company/create",
-            element: <CreateCompany />,
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <CreateCompany />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "companies",
-            element: <MyCompanies />,
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <MyCompanies />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "companies/:companyId",
-            element: <CompanyCard />,
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <CompanyCard />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "companies/:companyId/update",
-            element: <UpdateCompany />,
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <UpdateCompany />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "companies/:companyId/create-job",
-            element: <CreateJob />,
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <CreateJob />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "companies/:companyId/jobs",
-            element: <CompanyJobs />,
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <CompanyJobs />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "my-jobs",
-            element: <MyJobs />,
-          },
-          {
-            path: "jobs/:jobId",
-            element: <JobDetails />,
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <MyJobs />
+              </ProtectedRoutes>
+            ),
           },
           {
             path: "jobs/:jobId/applicants",
-            element: <MyApplicants />,
+            element: (
+              <ProtectedRoutes allowedRoles={["recruiter"]}>
+                <MyApplicants />
+              </ProtectedRoutes>
+            ),
           },
         ],
       },
