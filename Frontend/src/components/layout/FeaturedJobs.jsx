@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import JobCard from "./JobCard";
 import api from "@/api/axios";
 import toast from "react-hot-toast";
+import JobCardSkeleton from "../common/JobCardSkeleton";
 
 const FeaturedJobs = () => {
   const [featuredJobs, setFeaturedJobs] = useState([]);
@@ -30,13 +31,19 @@ const FeaturedJobs = () => {
 
       <div className="flex gap-5 md:gap-8 flex-wrap items-center justify-center mx-12 mt-8">
         {loading ? (
-          <div className="flex items-center justify-center mt-5">
-            <p className="text-sm text-gray-600">Loading Featured Jobs....</p>
+          <div className="flex gap-5 md:gap-8 flex-wrap items-center justify-center mx-12 mt-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <JobCardSkeleton key={i} />
+            ))}
           </div>
-        ) : featuredJobs.length === 0  ? (
-          <p>No Jobs Found!</p>
+        ) : featuredJobs.length === 0 ? (
+          <p className="mt-5">No Jobs Found!</p>
         ) : (
-          featuredJobs.map((job) => <JobCard key={job._id} job={job} />)
+          <div className="flex gap-5 md:gap-8 flex-wrap items-center justify-center mx-12 mt-8">
+            {featuredJobs.map((job) => (
+              <JobCard key={job._id} job={job} />
+            ))}
+          </div>
         )}
       </div>
     </div>

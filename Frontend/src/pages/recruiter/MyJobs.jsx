@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import JobCard from "@/components/layout/JobCard";
 import toast from "react-hot-toast";
 import api from "@/api/axios";
-import Loader from "@/components/common/Loader";
+import JobCardSkeleton from "@/components/common/JobCardSkeleton";
 
 const MyJobs = () => {
   const [jobsData, setJobsData] = useState([]);
@@ -27,39 +27,38 @@ const MyJobs = () => {
     fetchMyJobs();
   }, []);
 
-  if (loading) {
-    return <Loader />
-  }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 mt-12">
-      <div className="bg-white shadow-xl rounded-xl p-6">
-        
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">
-            My Jobs
-          </h1>
+  <div className="max-w-7xl mx-auto px-4 mt-12">
+    <div className="bg-white shadow-xl rounded-xl p-6">
+
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">My Jobs</h1>
+        {!loading && (
           <span className="bg-blue-100 text-blue-600 text-xl px-4 py-1 rounded-full font-medium">
             Total: {totalJobs}
           </span>
-        </div>
-
-        {jobsData.length === 0 ? (
-          <div className="flex justify-center items-center h-40 border border-dashed rounded-lg">
-            <p className="text-gray-500 text-lg">
-              No Jobs Posted Yet 🚀
-            </p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {jobsData.map((job) => (
-              <JobCard key={job._id} job={job} />
-            ))}
-          </div>
         )}
       </div>
+
+      {loading ? (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1,2,3].map((i) => <JobCardSkeleton key={i} />)}
+        </div>
+      ) : jobsData.length === 0 ? (
+        <div className="flex justify-center items-center h-40 border border-dashed rounded-lg">
+          <p className="text-gray-500 text-lg">No Jobs Posted Yet 🚀</p>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {jobsData.map((job) => (
+            <JobCard key={job._id} job={job} />
+          ))}
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
 };
 
 export default MyJobs;

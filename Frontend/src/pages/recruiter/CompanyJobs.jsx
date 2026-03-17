@@ -3,7 +3,7 @@ import JobCard from "@/components/layout/JobCard";
 import toast from "react-hot-toast";
 import api from "@/api/axios";
 import { useParams } from "react-router-dom";
-import Loader from "@/components/common/Loader";
+import JobCardSkeleton from "@/components/common/JobCardSkeleton";
 
 const CompanyJobs = () => {
   const [companyJobs, setCompanyJobs] = useState([]);
@@ -16,9 +16,7 @@ const CompanyJobs = () => {
         const res = await api.get(`/api/v1/company/${companyId}/jobs`);
         setCompanyJobs(res?.data?.companyJobs || []);
       } catch (error) {
-        toast.error(
-          error?.response?.data?.message || "Failed to fetch jobs"
-        );
+        toast.error(error?.response?.data?.message || "Failed to fetch jobs");
       } finally {
         setLoading(false);
       }
@@ -27,14 +25,9 @@ const CompanyJobs = () => {
     fetchCompanyJobs();
   }, [companyId]);
 
-  if (loading) {
-    return <Loader />
-  }
-
   return (
     <div className="max-w-6xl mx-auto mt-14 px-4">
       <div className="bg-white shadow-2xl rounded-3xl p-10">
-        
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Company Jobs
@@ -44,7 +37,13 @@ const CompanyJobs = () => {
           </span>
         </div>
 
-        {companyJobs.length === 0 ? (
+        {loading ? (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3].map((i) => (
+              <JobCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : companyJobs.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-gray-700 text-lg font-medium">
               No Jobs Posted Yet
@@ -56,11 +55,7 @@ const CompanyJobs = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {companyJobs.map((job) => (
-              <div
-                key={job._id}
-              >
-                <JobCard job={job} />
-              </div>
+              <JobCard key={job._id} job={job} />
             ))}
           </div>
         )}

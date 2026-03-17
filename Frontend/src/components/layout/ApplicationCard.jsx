@@ -13,7 +13,7 @@ const ApplicationCard = ({ app }) => {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4 bg-white shadow-xl rounded-xl p-6">
       <img
-        src={job?.company?.companyLogoPublicId}
+        src={job?.company?.companyLogo}
         alt={job?.company?.name}
         className="w-20 h-20 rounded-full object-cover border"
       />

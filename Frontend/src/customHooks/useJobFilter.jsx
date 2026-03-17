@@ -8,6 +8,7 @@ const useJobFilter = () => {
   const [jobs, setJobs] = useState([]);
   const [totalJobs, setTotalJobs] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   const filters = {
     keyword: searchParams.get("keyword") || "",
@@ -25,7 +26,8 @@ const useJobFilter = () => {
   });
 
   const setFilters = (updaterFn) => {
-    const updated = typeof updaterFn === "function" ? updaterFn(filters) : updaterFn;
+    const updated =
+      typeof updaterFn === "function" ? updaterFn(filters) : updaterFn;
     const newParams = new URLSearchParams();
     Object.entries(updated).forEach(([key, value]) => {
       if (value) newParams.set(key, value);
@@ -49,6 +51,7 @@ const useJobFilter = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
+        setLoading(true);
         const params = new URLSearchParams();
         Object.entries(filters).forEach(([key, value]) => {
           if (value) params.append(key, value);
@@ -60,13 +63,24 @@ const useJobFilter = () => {
         setTotalPages(res.data.totalPages);
       } catch (error) {
         toast.error(error.response?.data?.message || "Something went wrong");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchJobs();
   }, [searchParams]);
 
-  return { filters, setFilters, jobs, totalJobs, totalPages, inputValues, setInputValues };
+  return {
+    filters,
+    setFilters,
+    jobs,
+    totalJobs,
+    totalPages,
+    inputValues,
+    setInputValues,
+    loading,
+  };
 };
 
 export default useJobFilter;

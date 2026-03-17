@@ -143,6 +143,8 @@ export const getAllJobs = async (req, res) => {
       filter.experienceLevel = experienceLevel;
     }
 
+    filter.status = "Open"
+
     const jobs = await Job.find(filter)
       .populate("company", "name location")
       .populate("postedBy", "firstName lastName")
