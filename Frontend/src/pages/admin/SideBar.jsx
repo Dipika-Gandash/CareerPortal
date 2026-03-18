@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, LayoutDashboard, Users, Building2, Briefcase } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import api from "@/api/axios";
+import { useNavigate } from "react-router-dom";
+import { logOutUser } from "@/store/authSlice";
 
 const navLinks = [
   { label: "Dashboard", path: "/admin", icon: <LayoutDashboard size={20} /> },
@@ -11,6 +17,19 @@ const navLinks = [
 
 const SideBar = () => {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+    const handleLogOut = async () => {
+    try {
+      await api.post("/api/v1/user/logout");
+      dispatch(logOutUser());
+      toast.success("Logout Successfully");
+      navigate("/login");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
     <>
@@ -55,6 +74,8 @@ const SideBar = () => {
             </li>
           ))}
         </ul>
+
+        <Button onClick={handleLogOut} className="bg-red-700 text-white mt-4">Logout</Button>
       </aside>
     </>
   );

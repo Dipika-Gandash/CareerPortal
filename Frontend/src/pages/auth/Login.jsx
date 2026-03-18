@@ -21,7 +21,7 @@ const Login = () => {
   const user = useSelector((store) => store.auth.user);
   if (user) {
     if (user.role === "admin")
-      return <Navigate to="/admin/dashboard" replace />;
+      return <Navigate to="/admin" replace />;
     return <Navigate to="/" replace />;
   }
 
