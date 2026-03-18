@@ -17,11 +17,11 @@ const Hero = () => {
     if (user.role === "jobseeker") {
       heading = "Step Into Opportunities That Match Your Ambition.";
       subheading = "Find jobs made for your skills, apply with confidence, and unlock the next chapter in your career journey.";
-      primaryBtn = "Browse Jobs";
+      primaryBtn = "Search Jobs";
       secondaryBtn = "View Applications";
       image = "jobSeekerImage.jpg";
       primaryLink = "/browse";
-      secondaryLink ="/myApplications";
+      secondaryLink ="/my-applications";
     } else if (user.role === "recruiter") {
       heading = `Discover Talent. Build Exceptional Teams.`;
       subheading = "Post jobs, connect with the best candidates, and make smarter hiring decisions — faster, easier, better.";

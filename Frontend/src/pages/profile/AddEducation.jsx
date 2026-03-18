@@ -31,7 +31,7 @@ const AddEducation = () => {
     try {
       await api.post("/api/v1/user/profile/education", formData);
       toast.success("Education added successfully");
-      navigate("/profile");
+      navigate("/profile", { replace: true});
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {

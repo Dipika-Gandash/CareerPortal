@@ -32,7 +32,7 @@ const useJobFilter = () => {
     Object.entries(updated).forEach(([key, value]) => {
       if (value) newParams.set(key, value);
     });
-    setSearchParams(newParams);
+    setSearchParams(newParams, { replace: true });
   };
 
   useEffect(() => {

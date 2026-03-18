@@ -13,7 +13,6 @@ const FeaturedJobs = () => {
       try {
         const res = await api.get("/api/v1/job/allJobs?page=1&limit=6");
         setFeaturedJobs(res.data.jobs);
-        console.log(res.data.jobs);
       } catch (error) {
         toast.error(error?.response?.data?.message || "Something went wrong ");
       } finally {

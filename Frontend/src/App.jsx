@@ -5,6 +5,7 @@ import { fetchCurrentUser } from "./api/user";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import Footer from "./components/layout/Footer";
+import Loader from "./components/common/Loader";
 
 function App() {
   const dispatch = useDispatch();
@@ -19,7 +20,7 @@ function App() {
     getUser();
   }, [dispatch]);
 
-  if (loading) return <div>Loading...</div>; 
+  if (loading) return <Loader />
 
   return (
     <div className="flex flex-col min-h-screen">

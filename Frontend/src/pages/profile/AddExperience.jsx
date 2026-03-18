@@ -43,7 +43,7 @@ const AddExperience = () => {
     try {
       await api.post("/api/v1/user/profile/experience", formData);
       toast.success("Experience added successfully");
-      navigate("/profile");
+      navigate("/profile", { replace: true});
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     } finally {

@@ -76,15 +76,10 @@ const NavBar = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-48">
                   <div className="space-y-2">
-                    <p className="text-sm font-medium">My Account</p>
-                    <p className="cursor-pointer text-sm hover:text-indigo-600">
-                      Dashboard
-                    </p>
-                    <p className="cursor-pointer text-sm hover:text-indigo-600">
-                      Applications
-                    </p>
+                  <Link to="/profile" className="font-semibold"> View Profile</Link> 
+                  
                     <button
-                      className="cursor-pointer text-sm bg-red-500 text-white px-4 py-2 rounded-md"
+                      className="cursor-pointer text-sm bg-red-500 text-white px-4 py-2 mt-4 rounded-md"
                       onClick={handleLogOut}
                     >
                       Logout
@@ -145,9 +140,10 @@ const NavBar = () => {
                       : "My Companies"}
                   </Link>
                 </li>
-                <Button variant="outline" className="w-full">
+              <Link to="/profile">  <Button variant="outline" className="w-full">
                   Profile
-                </Button>
+                </Button></Link>
+                <Button onClick={handleLogOut} variant="outline" className="w-full bg-red-600 text-white border rounded-md">Logout</Button>
               </>
             ) : (
               <>
