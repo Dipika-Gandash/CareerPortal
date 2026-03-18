@@ -43,7 +43,7 @@ const CreateCompany = () => {
       }
       const res = await api.post("/api/v1/company/create", formData);
       toast.success("Company created successfully");
-      navigate("/recruiter/companies");
+      navigate("/recruiter/companies", {replace: true});
       console.log(res.data);
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");

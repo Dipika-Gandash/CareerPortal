@@ -13,19 +13,23 @@ function App() {
 
   useEffect(() => {
     const getUser = async () => {
-      const user = await fetchCurrentUser();
-      if (user) dispatch(setUser(user));
-      else dispatch(logOutUser());
+      try {
+        const user = await fetchCurrentUser();
+        if (user) dispatch(setUser(user));
+        else dispatch(logOutUser());
+      } catch (error) {
+        dispatch(logOutUser());
+      }
     };
     getUser();
   }, [dispatch]);
 
-  if (loading) return <Loader />
+  if (loading) return <Loader />;
 
   return (
     <div className="flex flex-col min-h-screen">
       <NavBar />
-       <main className="flex-grow">
+      <main className="flex-grow">
         <Outlet />
       </main>
       <Footer />

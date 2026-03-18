@@ -70,7 +70,7 @@ const UpdateCompany = () => {
 
       await api.patch(`/api/v1/company/${companyId}`, formData);
       toast.success("Company updated successfully");
-      navigate(`/recruiter/companies/${companyId}`);
+      navigate(`/recruiter/companies/${companyId}`, {replace: true});
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed");
     } finally {

@@ -29,7 +29,7 @@ const CompanyJobs = () => {
     <div className="max-w-6xl mx-auto mt-14 px-4">
       <div className="bg-white shadow-2xl rounded-3xl p-10">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
             Company Jobs
           </h1>
           <span className="text-gray-500 text-sm">

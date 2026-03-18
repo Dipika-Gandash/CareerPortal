@@ -73,9 +73,8 @@ const CreateJob = () => {
           .filter((item) => item !== ""),
       };
       await api.post(`/api/v1/company/${companyId}/create-job`, formattedData);
-      console.log(formattedData);
       toast.success("Job created Successfully");
-      navigate(`/recruiter/companies/${companyId}/jobs`);
+      navigate(`/recruiter/companies/${companyId}/jobs`, {replace : true});
     } catch (error) {
       console.log(error);
       toast.error(error.response?.data?.message || "Something went wrong");
