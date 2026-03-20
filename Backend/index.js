@@ -13,8 +13,6 @@ import jobRouter from './routes/jobRoutes.js';
 import applicationRouter from './routes/applicationRoutes.js';
 import adminRouter from './routes/adminRoutes.js';
 
-
-
 const app = express();
 app.use(express.json());
 app.use(cors({

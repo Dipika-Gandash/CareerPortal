@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://careerportal-backend.onrender.com",
+    baseURL: "",
     withCredentials: true
 })
 
