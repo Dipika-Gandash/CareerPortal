@@ -67,6 +67,34 @@ const ApplicantCard = ({ app }) => {
         </div>
       </div>
 
+      <div className="flex flex-col gap-2 mt-4">
+        {user.profile?.socialLinks?.linkedin ? (
+          <a
+            href={user.profile.socialLinks.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-blue-600 hover:underline font-medium"
+          >
+            LinkedIn
+          </a>
+        ) : (
+          <span className="text-sm text-gray-400">LinkedIn not provided</span>
+        )}
+
+        {user.profile?.socialLinks?.github ? (
+          <a
+            href={user.profile.socialLinks.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-700 hover:underline font-medium"
+          >
+            GitHub
+          </a>
+        ) : (
+          <span className="text-sm text-gray-400">GitHub not provided</span>
+        )}
+      </div>
+
       <div className="flex items-start md:items-end mt-5 gap-3">
         <span
           className={`text-sm font-medium px-3 py-1 md:px-4 md:py-2 rounded-full ${statusColors[status]}`}
