@@ -1,13 +1,14 @@
 import Application from "../models/applicationSchema.js";
 import Job from "../models/jobSchema.js";
 import Company from "../models/companySchema.js";
+import { sendHiredEmail } from "../utils/mailer.js";
 
 export const applyJob = async (req, res) => {
   try {
     const user = req.user;
     const userId = user._id;
     const jobId = req.params.jobId;
-     if (!req.user.profile.resume) {
+    if (!req.user.profile.resume) {
       return res.status(400).json({
         success: false,
         message: "Please upload your resume in your profile first",
@@ -22,10 +23,10 @@ export const applyJob = async (req, res) => {
         message: "Job not found",
       });
     }
-    
+
     const existingApplication = await Application.findOne({
       user: userId,
-      job: jobId
+      job: jobId,
     });
 
     if (existingApplication) {
@@ -153,8 +154,7 @@ export const getAllApplicants = async (req, res) => {
       .limit(limit)
       .populate({
         path: "user",
-        select:
-          "firstName lastName phoneNumber profile.skills profile.resume",
+        select: "firstName lastName phoneNumber profile.skills profile.socialLinks.linkedin profile.socialLinks.github profile.resume",
       })
       .lean();
 
@@ -187,10 +187,17 @@ export const updateApplicationStatus = async (req, res) => {
       });
     }
 
-    const application = await Application.findById(applicationId).populate({
-      path: "job",
-      select: "postedBy",
-    });
+    const application = await Application.findById(applicationId)
+      .populate("user", "firstName lastName email")
+      .populate({
+        path: "job",
+        select: "title postedBy company",
+        populate: {
+          path: "company",
+          select: "name",
+        },
+      });
+
     if (!application) {
       return res.status(404).json({
         success: false,
@@ -207,10 +214,19 @@ export const updateApplicationStatus = async (req, res) => {
 
     application.status = status;
     await application.save();
+
+    if (status === "Hired") {
+      await sendHiredEmail(
+        application.user.email,
+       `${application.user.firstName} ${application.user.lastName}`,
+        application.job.title,
+        application.job.company.name,
+      );
+    }
     return res.status(200).json({
       success: true,
       message: "Application status updated",
-      application
+      application,
     });
   } catch (error) {
     return res.status(500).json({
