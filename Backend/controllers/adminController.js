@@ -2,6 +2,7 @@ import Company from "../models/companySchema.js";
 import Job from "../models/jobSchema.js";
 import User from "../models/userSchema.js";
 import Application from "../models/applicationSchema.js";
+import { sendRecruiterStatusEmail } from "../utils/mailer.js"
 
 export const getAdminDashboard = async (req, res) => {
   try {
@@ -41,6 +42,7 @@ export const getAdminDashboard = async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
 export const getAllCompaniesAdmin = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -275,6 +277,12 @@ export const updateRecruiterStatus = async (req, res) => {
 
     recruiter.isBlocked = !recruiter.isBlocked;
     await recruiter.save();
+    await sendRecruiterStatusEmail(
+      recruiter.email,
+      `${recruiter.firstName} ${recruiter.lastName}`,
+      recruiter.isBlocked
+    )
+
     return res.status(200).json({
       success: true,
       message: recruiter.isBlocked

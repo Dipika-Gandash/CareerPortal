@@ -9,7 +9,7 @@ const applicationRouter = Router();
 
 applicationRouter.post('/:jobId/apply', isAuthenticated, isJobSeeker,validateObjectId('jobId'), applyJob);
 applicationRouter.get('/my-jobs', isAuthenticated, isJobSeeker, getUserApplication);
-applicationRouter.get('/:jobId/my-applicants', isAuthenticated, isRecruiter, validateObjectId('jobId'), getAllApplicants)
+applicationRouter.get('/:jobId/my-applicants', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('jobId'), getAllApplicants)
 applicationRouter.patch('/:applicationId/status', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('applicationId'), updateApplicationStatus);
 export default applicationRouter;
 

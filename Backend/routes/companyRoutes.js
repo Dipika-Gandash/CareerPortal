@@ -14,7 +14,7 @@ companyRouter.get('/my', isAuthenticated, isRecruiter, getMyCompanies);
 
 companyRouter.get('/:companyId', isAuthenticated, isRecruiter, validateObjectId('companyId'), getCompanyById);
 companyRouter.patch('/:companyId', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), uploadImage.single("companyLogo"), updateCompany);
-companyRouter.delete('/:companyId', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), deleteCompany);
+companyRouter.delete('/:companyId', isAuthenticated, isRecruiter, validateObjectId('companyId'), deleteCompany);
 
 companyRouter.post('/:companyId/create-job', isAuthenticated, isRecruiter, checkRecruiterStatus, validateObjectId('companyId'), createJob);
 
