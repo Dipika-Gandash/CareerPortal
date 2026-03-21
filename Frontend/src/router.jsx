@@ -119,7 +119,7 @@ export const router = createBrowserRouter([
           {
             path: "company/create",
             element: (
-              <ProtectedRoutes allowedRoles={["recruiter"]}>
+              <ProtectedRoutes allowedRoles={["recruiter"]} blockIfBlocked>
                 <CreateCompany />
               </ProtectedRoutes>
             ),
@@ -143,7 +143,7 @@ export const router = createBrowserRouter([
           {
             path: "companies/:companyId/update",
             element: (
-              <ProtectedRoutes allowedRoles={["recruiter"]}>
+              <ProtectedRoutes allowedRoles={["recruiter"]} blockIfBlocked>
                 <UpdateCompany />
               </ProtectedRoutes>
             ),
@@ -151,7 +151,7 @@ export const router = createBrowserRouter([
           {
             path: "companies/:companyId/create-job",
             element: (
-              <ProtectedRoutes allowedRoles={["recruiter"]}>
+              <ProtectedRoutes allowedRoles={["recruiter"]} blockIfBlocked>
                 <CreateJob />
               </ProtectedRoutes>
             ),
@@ -183,7 +183,7 @@ export const router = createBrowserRouter([
           {
             path: "jobs/:jobId/applicants",
             element: (
-              <ProtectedRoutes allowedRoles={["recruiter"]}>
+              <ProtectedRoutes allowedRoles={["recruiter"]} blockIfBlocked>
                 <MyApplicants />
               </ProtectedRoutes>
             ),

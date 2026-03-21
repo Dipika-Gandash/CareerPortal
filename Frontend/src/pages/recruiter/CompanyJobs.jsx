@@ -43,7 +43,7 @@ const CompanyJobs = () => {
               <JobCardSkeleton key={i} />
             ))}
           </div>
-        ) : companyJobs.length === 0 ? (
+        ) : !companyJobs || companyJobs.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-gray-700 text-lg font-medium">
               No Jobs Posted Yet

@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import toast from "react-hot-toast";
 import Loader from "@/components/common/Loader";
+import useBlockedGuard from "@/customHooks/useBlockedGaurd";
 
 const CompanyCard = () => {
   const { companyId } = useParams();
@@ -22,6 +23,7 @@ const CompanyCard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { isBlocked, guardAction } = useBlockedGuard();
 
   useEffect(() => {
     const fetchCompanyDetails = async () => {
@@ -52,7 +54,7 @@ const CompanyCard = () => {
   };
 
   if (loading) {
-    return <Loader />
+    return <Loader />;
   }
 
   if (error) {
@@ -97,9 +99,12 @@ const CompanyCard = () => {
         <div className="flex flex-col md:flex-row gap-4 mt-8">
           <button
             onClick={() =>
-              navigate(`/recruiter/companies/${companyId}/create-job`)
+              guardAction(() =>
+                navigate(`/recruiter/companies/${companyId}/create-job`),
+              )
             }
-            className="px-4 py-2 rounded-xl bg-purple-600 text-white cursor-pointer"
+            className={`px-4 py-2 rounded-xl text-white
+      ${isBlocked ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-purple-600 cursor-pointer"}`}
           >
             Post Job
           </button>
@@ -110,8 +115,13 @@ const CompanyCard = () => {
             View Jobs
           </button>
           <button
-            onClick={() => navigate(`/recruiter/companies/${companyId}/update`)}
-            className="px-4 py-2 rounded-xl bg-gray-300 text-black cursor-pointer"
+            onClick={() =>
+              guardAction(() =>
+                navigate(`/recruiter/companies/${companyId}/update`),
+              )
+            }
+            className={`px-4 py-2 rounded-xl
+      ${isBlocked ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gray-300 text-black cursor-pointer"}`}
           >
             Edit Company Details
           </button>

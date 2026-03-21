@@ -5,11 +5,13 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Loader from "@/components/common/Loader";
+import useBlockedGuard from "@/customHooks/useBlockedGaurd";
 
 const MyCompanies = () => {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { isBlocked, guardAction } = useBlockedGuard();
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -20,7 +22,6 @@ const MyCompanies = () => {
         toast.error(
           error.response?.data?.message || "Failed to fetch companies",
         );
-
       } finally {
         setLoading(false);
       }
@@ -29,7 +30,7 @@ const MyCompanies = () => {
     fetchCompanies();
   }, []);
 
-  if(loading) return <Loader />
+  if (loading) return <Loader />;
 
   return (
     <div className="max-w-3xl mx-auto mt-10 px-4">
@@ -37,15 +38,25 @@ const MyCompanies = () => {
         My Companies
       </h1>
       <div className="space-y-6">
-        { !companies ? (
+        {!companies ? (
           <div className="text-center">
             <p className="text-xl text-black font-semibold">
               {" "}
               No companies found. Create one first.
             </p>
-            <Link to="/recruiter/company/create">
-              <Button className="mt-6 cursor-pointer">Create Company</Button>
-            </Link>
+            <button
+              onClick={() =>
+                guardAction(() => navigate("/recruiter/company/create"))
+              }
+              className={`mt-6 px-4 py-2 rounded-md text-white
+    ${
+      isBlocked
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-purple-600 cursor-pointer"
+    }`}
+            >
+              Create Company
+            </button>
           </div>
         ) : (
           companies.map((company) => (
@@ -72,10 +83,17 @@ const MyCompanies = () => {
                 <p className="text-purple-600 text-sm">{company.website}</p>
               </div>
               <button
-                className="px-4 py-2 border rounded-xl bg-purple-600 text-white cursor-pointer"
+                className={`px-4 py-2 border rounded-xl text-white 
+    ${
+      isBlocked
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-purple-600 cursor-pointer"
+    }`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  navigate(`/recruiter/companies/${company._id}/create-job`);
+                  guardAction(() =>
+                    navigate(`/recruiter/companies/${company._id}/create-job`),
+                  );
                 }}
               >
                 Post Job

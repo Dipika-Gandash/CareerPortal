@@ -35,7 +35,7 @@ const FeaturedJobs = () => {
               <JobCardSkeleton key={i} />
             ))}
           </div>
-        ) : featuredJobs.length === 0 ? (
+        ) : !featuredJobs || featuredJobs.length === 0 ? (
           <p className="mt-5">No Jobs Found!</p>
         ) : (
           <div className="flex gap-5 md:gap-8 flex-wrap items-center justify-center mx-12 mt-8">

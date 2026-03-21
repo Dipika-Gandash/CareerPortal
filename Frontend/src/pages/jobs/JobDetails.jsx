@@ -15,6 +15,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import Loader from "@/components/common/Loader";
+import useBlockedGuard from "@/customHooks/useBlockedGaurd";
 
 const JobDetails = () => {
   const { jobId } = useParams();
@@ -24,6 +25,7 @@ const JobDetails = () => {
 
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  const { isBlocked, guardAction } = useBlockedGuard();
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -130,7 +132,6 @@ const JobDetails = () => {
             <span className="font-semibold">Job Type:</span>{" "}
             {jobDetails?.jobType}
           </div>
-          
         </div>
 
         <div>
@@ -197,7 +198,23 @@ const JobDetails = () => {
               <>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <button className="px-4 py-2 rounded-xl bg-yellow-500 text-white cursor-pointer hover:bg-yellow-600">
+                    <button
+                      onClick={(e) => {
+                        if (isBlocked) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toast.error(
+                            "Your account is blocked. You cannot perform this action.",
+                          );
+                        }
+                      }}
+                      className={`px-4 py-2 rounded-xl text-white
+            ${
+              isBlocked
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-yellow-500 cursor-pointer hover:bg-yellow-600"
+            }`}
+                    >
                       Update Status
                     </button>
                   </AlertDialogTrigger>
@@ -236,7 +253,23 @@ const JobDetails = () => {
 
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <button className="px-4 py-2 rounded-xl bg-red-600 text-white cursor-pointer">
+                    <button
+                      onClick={(e) => {
+                        if (isBlocked) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toast.error(
+                            "Your account is blocked. You cannot perform this action.",
+                          );
+                        }
+                      }}
+                      className={`px-4 py-2 rounded-xl text-white
+        ${
+          isBlocked
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-red-600 cursor-pointer"
+        }`}
+                    >
                       Delete
                     </button>
                   </AlertDialogTrigger>
@@ -265,9 +298,16 @@ const JobDetails = () => {
                 </AlertDialog>
                 <button
                   onClick={() =>
-                    navigate(`/recruiter/jobs/${jobId}/applicants`)
+                    guardAction(() =>
+                      navigate(`/recruiter/jobs/${jobId}/applicants`),
+                    )
                   }
-                  className="px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700"
+                  className={`px-4 py-2 rounded-xl text-white
+    ${
+      isBlocked
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+        : "bg-indigo-600 cursor-pointer hover:bg-indigo-700"
+    }`}
                 >
                   View Applicants
                 </button>
