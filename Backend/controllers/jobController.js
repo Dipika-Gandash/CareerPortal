@@ -121,7 +121,17 @@ export const getAllJobs = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const filter = { status: "Open" };
+     const activeRecruiters = await User.find({ 
+      role: "recruiter", 
+      isBlocked: false 
+    }).select('_id')
+
+     const activeRecruiterIds = activeRecruiters.map(r => r._id)
+
+     const filter = { 
+      status: "Open",
+      postedBy: { $in: activeRecruiterIds } 
+    };
 
     if (keyword) {
       filter.title = { $regex: keyword, $options: "i" };
@@ -142,8 +152,6 @@ export const getAllJobs = async (req, res) => {
     if (experienceLevel) {
       filter.experienceLevel = experienceLevel;
     }
-
-    filter.status = "Open"
 
     const jobs = await Job.find(filter)
       .populate("company", "name location")
