@@ -136,6 +136,7 @@ export const getMyData = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        isBlocked: user.isBlocked
       },
     });
   } catch (error) {
@@ -156,7 +157,7 @@ export const getUserProfile = async (req, res) => {
         role: user.role,
         phoneNumber: user.phoneNumber,
         profile: user.profile,
-        isBlocked: user.isBlocked
+      
       },
     });
   } catch (error) {

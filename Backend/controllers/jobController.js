@@ -123,7 +123,7 @@ export const getAllJobs = async (req, res) => {
 
      const activeRecruiters = await User.find({ 
       role: "recruiter", 
-      isBlocked: false 
+      isBlocked: { $ne: true } 
     }).select('_id')
 
      const activeRecruiterIds = activeRecruiters.map(r => r._id)
