@@ -1,6 +1,7 @@
 import Job from "../models/jobSchema.js";
 import Company from "../models/companySchema.js";
 import { deleteJobWithApplications } from "../services/jobService.js";
+import User from "../models/userSchema.js";
 
 export const createJob = async (req, res) => {
   try {
