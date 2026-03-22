@@ -10,6 +10,15 @@ import { deleteJobWithApplications } from "../services/jobService.js";
 import cloudinary from "../config/cloudinary.js";
 import fs from "fs";
 
+const uploadToCloudinary = (buffer, options) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream(options, (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    }).end(buffer);
+  });
+};
+
 export const createCompany = async (req, res) => {
   try {
     const { name, description, website, location } = req.body;
@@ -17,13 +26,11 @@ export const createCompany = async (req, res) => {
     let companyLogoPublicId = "";
 
     if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
+      const result = await uploadToCloudinary(req.file.buffer, {
         folder: "company_logos",
       });
-
       companyLogo = result.secure_url;
       companyLogoPublicId = result.public_id;
-      fs.unlinkSync(req.file.path);
     }
 
     if (!name || !description || !website || !location) {
@@ -220,16 +227,16 @@ export const updateCompany = async (req, res) => {
     if (location) company.location = location;
 
     if (req.file) {
-      if (company.companyLogoPublicId) {
+     if (company.companyLogoPublicId) {
         await cloudinary.uploader.destroy(company.companyLogoPublicId);
       }
-      const result = await cloudinary.uploader.upload(req.file.path, {
+
+      const result = await uploadToCloudinary(req.file.buffer, {
         folder: "company_logos",
       });
 
       company.companyLogo = result.secure_url;
       company.companyLogoPublicId = result.public_id;
-      fs.unlinkSync(req.file.path);
     }
     await company.save();
     return res.status(200).json({

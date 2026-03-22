@@ -1,7 +1,6 @@
 import User from "../models/userSchema.js";
 import mongoose from "mongoose";
 import cloudinary from "../config/cloudinary.js";
-import fs from "fs";
 
 export const registerUser = async (req, res) => {
   try {
@@ -181,22 +180,27 @@ export const updateUserProfile = async (req, res) => {
     const user = req.user;
 
     if (req.files?.resume) {
-      const filePath = req.files.resume[0].path;
+       const fileBuffer = req.files.resume[0].buffer;
 
       try {
         if (user.profile.resumePublicId) {
-          await cloudinary.uploader.destroy(user.profile.resumePublicId);
+          await cloudinary.uploader.destroy(user.profile.resumePublicId, {
+            resource_type: "raw",
+          });
         }
 
-        const uploadFile = await cloudinary.uploader.upload(filePath, {
-          folder: "resumes",
-          resource_type: "raw",
-          access_mode: "public",
+       const uploadFile = await new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream(
+            { folder: "resumes", resource_type: "raw", access_mode: "public" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          ).end(fileBuffer);
         });
+
         user.profile.resume = uploadFile.secure_url;
         user.profile.resumePublicId = uploadFile.public_id;
-
-        fs.unlinkSync(filePath);
       } catch (error) {
         return res.status(500).json({
           success: false,
@@ -206,21 +210,25 @@ export const updateUserProfile = async (req, res) => {
     }
 
     if (req.files?.profilePhoto) {
-      const ImagePath = req.files.profilePhoto[0].path;
+      const imageBuffer = req.files.profilePhoto[0].buffer;
 
       try {
         if (user.profile.profilePhotoPublicId) {
           await cloudinary.uploader.destroy(user.profile.profilePhotoPublicId);
         }
 
-        const updateProfile = await cloudinary.uploader.upload(ImagePath, {
-          folder: "profile_photos",
+       const updateProfile = await new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream(
+            { folder: "profile_photos" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          ).end(imageBuffer);
         });
 
         user.profile.profilePhoto = updateProfile.secure_url;
         user.profile.profilePhotoPublicId = updateProfile.public_id;
-
-        fs.unlinkSync(ImagePath);
       } catch (error) {
         return res.status(500).json({
           success: false,
