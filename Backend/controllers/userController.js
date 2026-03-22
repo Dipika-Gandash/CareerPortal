@@ -92,7 +92,7 @@ export const loginUser = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        isBlocked: user.isBlocked
+        isBlocked: user.isBlocked,
       },
     });
   } catch (error) {
@@ -135,7 +135,7 @@ export const getMyData = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        isBlocked: user.isBlocked
+        isBlocked: user.isBlocked,
       },
     });
   } catch (error) {
@@ -156,7 +156,6 @@ export const getUserProfile = async (req, res) => {
         role: user.role,
         phoneNumber: user.phoneNumber,
         profile: user.profile,
-      
       },
     });
   } catch (error) {
@@ -180,7 +179,7 @@ export const updateUserProfile = async (req, res) => {
     const user = req.user;
 
     if (req.files?.resume) {
-       const fileBuffer = req.files.resume[0].buffer;
+      const fileBuffer = req.files.resume[0].buffer;
 
       try {
         if (user.profile.resumePublicId) {
@@ -189,14 +188,20 @@ export const updateUserProfile = async (req, res) => {
           });
         }
 
-       const uploadFile = await new Promise((resolve, reject) => {
-          cloudinary.uploader.upload_stream(
-            { folder: "resumes", resource_type: "raw", access_mode: "public" },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          ).end(fileBuffer);
+        const uploadFile = await new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream(
+              {
+                folder: "resumes",
+                resource_type: "raw",
+                access_mode: "public",
+              },
+              (error, result) => {
+                if (error) reject(error);
+                else resolve(result);
+              },
+            )
+            .end(fileBuffer);
         });
 
         user.profile.resume = uploadFile.secure_url;
@@ -217,14 +222,13 @@ export const updateUserProfile = async (req, res) => {
           await cloudinary.uploader.destroy(user.profile.profilePhotoPublicId);
         }
 
-       const updateProfile = await new Promise((resolve, reject) => {
-          cloudinary.uploader.upload_stream(
-            { folder: "profile_photos" },
-            (error, result) => {
+        const updateProfile = await new Promise((resolve, reject) => {
+          cloudinary.uploader
+            .upload_stream({ folder: "profile_photos" }, (error, result) => {
               if (error) reject(error);
               else resolve(result);
-            }
-          ).end(imageBuffer);
+            })
+            .end(imageBuffer);
         });
 
         user.profile.profilePhoto = updateProfile.secure_url;
