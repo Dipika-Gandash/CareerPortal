@@ -184,7 +184,7 @@ export const updateUserProfile = async (req, res) => {
       try {
         if (user.profile.resumePublicId) {
           await cloudinary.uploader.destroy(user.profile.resumePublicId, {
-            resource_type: "raw",
+            resource_type: "image",
           });
         }
 
@@ -193,7 +193,8 @@ export const updateUserProfile = async (req, res) => {
             .upload_stream(
               {
                 folder: "resumes",
-                resource_type: "raw",
+                resource_type: "image",
+                format: "pdf",
                 access_mode: "public",
               },
               (error, result) => {
