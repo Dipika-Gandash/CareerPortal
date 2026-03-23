@@ -216,7 +216,7 @@ export const updateApplicationStatus = async (req, res) => {
     await application.save();
 
     if (status === "Hired") {
-      await sendHiredEmail(
+      sendHiredEmail(
         application.user.email,
        `${application.user.firstName} ${application.user.lastName}`,
         application.job.title,

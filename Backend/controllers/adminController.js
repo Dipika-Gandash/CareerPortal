@@ -286,7 +286,7 @@ export const updateRecruiterStatus = async (req, res) => {
     recruiter.isBlocked = !recruiter.isBlocked;
     await recruiter.save();
     try {
-      await sendRecruiterStatusEmail(
+     sendRecruiterStatusEmail(
         recruiter.email,
         `${recruiter.firstName} ${recruiter.lastName}`,
         recruiter.isBlocked,
