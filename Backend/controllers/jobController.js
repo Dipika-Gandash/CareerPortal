@@ -42,6 +42,11 @@ export const createJob = async (req, res) => {
       });
     }
 
+    if (jobFormData.description.length < 50) {
+      toast.error("Description must be at least 50 characters");
+      return;
+    }
+
     const minSalary = Number(salary?.min);
     const maxSalary = Number(salary?.max);
 
@@ -54,7 +59,7 @@ export const createJob = async (req, res) => {
       requirements.length === 0 ||
       !salary ||
       isNaN(minSalary) ||
-      isNaN(maxSalary) 
+      isNaN(maxSalary)
     ) {
       return res.status(400).json({
         success: false,
@@ -62,8 +67,8 @@ export const createJob = async (req, res) => {
       });
     }
 
-    if(minSalary > maxSalary) {
-       return res.status(400).json({
+    if (minSalary > maxSalary) {
+      return res.status(400).json({
         success: false,
         message: "Max Salary should be greater than Min Salary",
       });
@@ -87,7 +92,10 @@ export const createJob = async (req, res) => {
       description,
       requirements: normalizedRequirements,
       experienceLevel,
-      salary,
+      salary: {
+        min: minSalary,
+        max: maxSalary,
+      },
       location,
       workMode,
       jobType,
@@ -122,16 +130,16 @@ export const getAllJobs = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-     const activeRecruiters = await User.find({ 
-      role: "recruiter", 
-      isBlocked: { $ne: true } 
-    }).select('_id')
+    const activeRecruiters = await User.find({
+      role: "recruiter",
+      isBlocked: { $ne: true },
+    }).select("_id");
 
-     const activeRecruiterIds = activeRecruiters.map(r => r._id)
+    const activeRecruiterIds = activeRecruiters.map((r) => r._id);
 
-     const filter = { 
+    const filter = {
       status: "Open",
-      postedBy: { $in: activeRecruiterIds } 
+      postedBy: { $in: activeRecruiterIds },
     };
 
     if (keyword) {
