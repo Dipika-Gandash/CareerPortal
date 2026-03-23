@@ -2,7 +2,7 @@ import Company from "../models/companySchema.js";
 import Job from "../models/jobSchema.js";
 import User from "../models/userSchema.js";
 import Application from "../models/applicationSchema.js";
-import { sendRecruiterStatusEmail } from "../utils/mailer.js"
+import { sendRecruiterStatusEmail } from "../utils/mailer.js";
 
 export const getAdminDashboard = async (req, res) => {
   try {
@@ -20,9 +20,13 @@ export const getAdminDashboard = async (req, res) => {
       Job.countDocuments(),
       Company.countDocuments(),
       Application.countDocuments(),
-      Job.find().sort({ createdAt: -1 }).limit(4)
+      Job.find()
+        .sort({ createdAt: -1 })
+        .limit(4)
         .populate("company", "name companyLogo"),
-      User.find({ role: "recruiter" }).sort({ createdAt: -1 }).limit(4)
+      User.find({ role: "recruiter" })
+        .sort({ createdAt: -1 })
+        .limit(4)
         .select("firstName lastName email profile.profilePhoto createdAt"),
     ]);
 
@@ -39,7 +43,9 @@ export const getAdminDashboard = async (req, res) => {
       recentRecruiters,
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -226,7 +232,9 @@ export const getRecruiters = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const recruiters = await User.find({ role: "recruiter" })
-      .select("firstName lastName email profile.bio profile.profilePhoto isBlocked createdAt")
+      .select(
+        "firstName lastName email profile.bio profile.profilePhoto isBlocked createdAt",
+      )
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });
@@ -277,11 +285,15 @@ export const updateRecruiterStatus = async (req, res) => {
 
     recruiter.isBlocked = !recruiter.isBlocked;
     await recruiter.save();
-    await sendRecruiterStatusEmail(
-      recruiter.email,
-      `${recruiter.firstName} ${recruiter.lastName}`,
-      recruiter.isBlocked
-    )
+    try {
+      await sendRecruiterStatusEmail(
+        recruiter.email,
+        `${recruiter.firstName} ${recruiter.lastName}`,
+        recruiter.isBlocked,
+      );
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError.message);
+    }
 
     return res.status(200).json({
       success: true,
