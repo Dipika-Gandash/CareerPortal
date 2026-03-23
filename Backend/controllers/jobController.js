@@ -42,10 +42,12 @@ export const createJob = async (req, res) => {
       });
     }
 
-    if (jobFormData.description.length < 50) {
-      toast.error("Description must be at least 50 characters");
-      return;
-    }
+   if (description.length < 50) {
+  return res.status(400).json({
+    success: false,
+    message: "Description must be at least 50 characters",
+  });
+}
 
     const minSalary = Number(salary?.min);
     const maxSalary = Number(salary?.max);
