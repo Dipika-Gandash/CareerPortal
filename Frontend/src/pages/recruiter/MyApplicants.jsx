@@ -36,7 +36,7 @@ const MyApplicants = () => {
     </div>
 
     <div className="space-y-4">
-      {applicants.length === 0 ? (
+      {!applicants || applicants.length === 0 ? (
         <p className="text-center text-gray-500 mt-10">No applicants yet</p>
       ) : (
         applicants.map((app) => (
