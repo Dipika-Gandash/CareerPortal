@@ -103,7 +103,7 @@ const SignUp = () => {
             <Label htmlFor="phoneNumber">Phone Number</Label>
             <Input
               id="phoneNumber"
-              type="Number"
+              type="tel"
               name="phoneNumber"
               placeholder="Enter your phone number"
               value={formData.phoneNumber}

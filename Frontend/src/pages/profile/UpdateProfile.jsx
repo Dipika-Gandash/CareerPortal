@@ -218,6 +218,7 @@ const UpdateProfile = () => {
           <Input
             id="phoneNo"
             name="phoneNumber"
+            type="tel"   
             value={profileData.phoneNumber}
             onChange={handleChange}
             placeholder="Phone Number"

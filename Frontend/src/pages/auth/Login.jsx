@@ -99,7 +99,6 @@ const Login = () => {
             </span>
           </div> */}
           <Button disabled={loggingIn} className="w-full">
-            {" "}
             {loggingIn ? "Logging in..." : "Login"}
           </Button>
 
