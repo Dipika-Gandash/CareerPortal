@@ -285,15 +285,13 @@ export const updateRecruiterStatus = async (req, res) => {
 
     recruiter.isBlocked = !recruiter.isBlocked;
     await recruiter.save();
-    try {
-     sendRecruiterStatusEmail(
-        recruiter.email,
-        `${recruiter.firstName} ${recruiter.lastName}`,
-        recruiter.isBlocked,
-      );
-    } catch (emailError) {
-      console.error("Email sending failed:", emailError.message);
-    }
+    sendRecruiterStatusEmail(
+      recruiter.email,
+      `${recruiter.firstName} ${recruiter.lastName}`,
+      recruiter.isBlocked,
+    )
+      .then(() => console.log("Recruiter email sent"))
+      .catch((err) => console.error("Recruiter email failed:", err.message));
 
     return res.status(200).json({
       success: true,

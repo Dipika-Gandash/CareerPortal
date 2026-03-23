@@ -155,12 +155,12 @@ export const getAllApplicants = async (req, res) => {
       .populate({
         path: "user",
         match: { _id: { $exists: true } },
-        select: "firstName lastName phoneNumber profile.skills profile.socialLinks.linkedin profile.socialLinks.github profile.resume",
+        select:
+          "firstName lastName phoneNumber profile.skills profile.socialLinks.linkedin profile.socialLinks.github profile.resume",
       })
       .lean();
 
-      const validApplicants = applicants.filter((app) => app.user);
-
+    const validApplicants = applicants.filter((app) => app.user);
 
     return res.status(200).json({
       success: true,
@@ -222,10 +222,12 @@ export const updateApplicationStatus = async (req, res) => {
     if (status === "Hired") {
       sendHiredEmail(
         application.user.email,
-       `${application.user.firstName} ${application.user.lastName}`,
+        `${application.user.firstName} ${application.user.lastName}`,
         application.job.title,
         application.job.company.name,
-      );
+      )
+        .then(() => console.log("Hired email sent"))
+        .catch((err) => console.error("Hired email failed:", err.message));
     }
     return res.status(200).json({
       success: true,
@@ -245,8 +247,8 @@ export const cleanInvalidApplications = async (req, res) => {
     const apps = await Application.find().populate("user");
 
     const invalidIds = apps
-      .filter(app => app.user === null)
-      .map(app => app._id);
+      .filter((app) => app.user === null)
+      .map((app) => app._id);
 
     await Application.deleteMany({ _id: { $in: invalidIds } });
 
