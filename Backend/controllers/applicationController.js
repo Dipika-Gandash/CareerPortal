@@ -154,13 +154,17 @@ export const getAllApplicants = async (req, res) => {
       .limit(limit)
       .populate({
         path: "user",
+        match: { _id: { $exists: true } },
         select: "firstName lastName phoneNumber profile.skills profile.socialLinks.linkedin profile.socialLinks.github profile.resume",
       })
       .lean();
 
+      const validApplicants = applicants.filter((app) => app.user);
+
+
     return res.status(200).json({
       success: true,
-      totalApplicants,
+      totalApplicants: validApplicants.length,
       page,
       totalPages,
       applicants,
@@ -227,6 +231,28 @@ export const updateApplicationStatus = async (req, res) => {
       success: true,
       message: "Application status updated",
       application,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const cleanInvalidApplications = async (req, res) => {
+  try {
+    const apps = await Application.find().populate("user");
+
+    const invalidIds = apps
+      .filter(app => app.user === null)
+      .map(app => app._id);
+
+    await Application.deleteMany({ _id: { $in: invalidIds } });
+
+    return res.status(200).json({
+      success: true,
+      message: `Deleted ${invalidIds.length} invalid applications`,
     });
   } catch (error) {
     return res.status(500).json({
