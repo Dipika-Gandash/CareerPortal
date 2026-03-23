@@ -8,6 +8,7 @@ const AdminRecruiters = () => {
   const [recruiters, setRecruiters] = useState([]);
   const [totalRecruiters, setTotalRecruiters] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadingIds, setLoadingIds] = useState([]);
 
   useEffect(() => {
     const fetchRecruiters = async () => {
@@ -25,17 +26,21 @@ const AdminRecruiters = () => {
   }, []);
 
   const handleToggleBlock = async (recruiterId, isBlocked) => {
+      if (loadingIds.includes(recruiterId)) return;
+       setLoadingIds((prev) => [...prev, recruiterId]); 
     try {
       await api.patch(`/api/v1/admin/recruiters/${recruiterId}/status`);
       setRecruiters((prev) =>
         prev.map((r) =>
-          r._id === recruiterId ? { ...r, isBlocked: !isBlocked } : r
-        )
+          r._id === recruiterId ? { ...r, isBlocked: !isBlocked } : r,
+        ),
       );
       toast.success(isBlocked ? "Recruiter unblocked" : "Recruiter blocked");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to update status");
-    }
+    }  finally {
+    setLoadingIds((prev) => prev.filter((id) => id !== recruiterId)); 
+  }
   };
 
   if (loading) return <Loader />;
@@ -58,6 +63,7 @@ const AdminRecruiters = () => {
               key={recruiter._id}
               recruiter={recruiter}
               onToggleBlock={handleToggleBlock}
+              isLoading={loadingIds.includes(recruiter._id)}
             />
           ))}
         </div>
