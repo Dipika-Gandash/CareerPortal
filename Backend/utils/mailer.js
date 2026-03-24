@@ -15,8 +15,8 @@ const sendHiredEmail = async (candidateEmail, candidateName, jobTitle, companyNa
       to: candidateEmail,
       subject: `Congratulations! You've been hired at ${companyName}`,
       html: `
-        <h2>Congratulations ${candidateName}!</h2>
-        <p>You have been <b>selected</b> for the position of <b>${jobTitle}</b> at <b>${companyName}</b>.</p>
+        <h4>Congratulations ${candidateName}!</h4>
+        <p>Hi ${candidateName}, you are hired for ${jobTitle} at ${companyName}</p>
         <p>Welcome aboard!</p>
       `
     });
