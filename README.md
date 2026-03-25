@@ -2,7 +2,7 @@
 
 A full-stack job portal where job seekers can find and apply for jobs, recruiters can post jobs and manage applicants, and admins can oversee the entire platform.
 
-🔗 **Live Demo:** [https://career-portal-one.vercel.app/](#)
+🔗 **Live Demo:** [career-portal-one.vercel.app](https://career-portal-one.vercel.app/)
 
 ---
 
@@ -128,7 +128,6 @@ npm run dev
 
 ---
 ⭐ If you found this project helpful, consider giving it a star!
-- LinkedIn: [Dipika](https://www.linkedin.com/in/dipika-411-910318251/)
 
 ---
 
