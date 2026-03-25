@@ -128,7 +128,5 @@ npm run dev
 
 ---
 ⭐ If you found this project helpful, consider giving it a star!
-
 ---
 
-⭐ If you found this project helpful, consider giving it a star!
