@@ -123,15 +123,11 @@ npm run dev
 ![Image](https://github.com/user-attachments/assets/d382a7b6-6b15-4dd0-bee2-9e2ce7e1942a)
 ![Image](https://github.com/user-attachments/assets/dd163324-0400-47d1-bfb5-af552e2a8a5b)
 ![Image](https://github.com/user-attachments/assets/54290b23-54ba-41c8-ada1-03982462b59d)
-![Image](https://github.com/user-attachments/assets/601-height)
+![Image](https://github.com/user-attachments/assets/7f2b600b-df33-4c38-8773-1d8d2b811451)
 ![Image](https://github.com/user-attachments/assets/f193a016-271d-42bd-bd0a-669406dccf22)
 
 ---
-
-## 🙋‍♂️ Author
-
-**Your Name**
-- GitHub: [@your-username](https://github.com/Dipika-Gandash)
+⭐ If you found this project helpful, consider giving it a star!
 - LinkedIn: [Dipika](https://www.linkedin.com/in/dipika-411-910318251/)
 
 ---
