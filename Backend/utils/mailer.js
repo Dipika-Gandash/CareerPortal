@@ -1,17 +1,11 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.APP_PASSWORD,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendHiredEmail = async (candidateEmail, candidateName, jobTitle, companyName) => {
- try {
-    const info = await transporter.sendMail({
-      from: `"Job Portal" <${process.env.EMAIL_USER}>`,
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "Career Portal <onboarding@resend.dev>",
       to: candidateEmail,
       subject: `Congratulations! You've been hired at ${companyName}`,
       html: `
@@ -21,33 +15,35 @@ const sendHiredEmail = async (candidateEmail, candidateName, jobTitle, companyNa
       `
     });
 
-    console.log("Hired email sent:", info.response);
+    if (error) throw new Error(error.message);
+    console.log("Hired email sent:", data.id);
   } catch (error) {
     console.error("Hired email error:", error.message);
-    throw error; 
+    throw error;
   }
-}
+};
 
- const sendRecruiterStatusEmail = async (recruiterEmail, recruiterName, isBlocked) => {
+const sendRecruiterStatusEmail = async (recruiterEmail, recruiterName, isBlocked) => {
   try {
-    const info = await transporter.sendMail({
-      from: `"Job Portal" <${process.env.EMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: "Career Portal <onboarding@resend.dev>",
       to: recruiterEmail,
       subject: isBlocked ? "Your account has been blocked" : "Your account has been unblocked",
       html: isBlocked ? `
-        <h2>Hello ${recruiterName},</h2>
+        <h4>Hello ${recruiterName},</h4>
         <p>Your recruiter account has been <b>blocked</b>.</p>
       ` : `
-        <h2>Hello ${recruiterName},</h2>
+        <h4>Hello ${recruiterName},</h4>
         <p>Your recruiter account has been <b>unblocked</b>.</p>
       `
     });
 
-    console.log("Recruiter email sent:", info.response);
+    if (error) throw new Error(error.message);
+    console.log("Recruiter email sent:", data.id);
   } catch (error) {
     console.error("Recruiter email error:", error.message);
     throw error;
   }
-}
+};
 
-export { sendHiredEmail , sendRecruiterStatusEmail};
+export { sendHiredEmail, sendRecruiterStatusEmail };
