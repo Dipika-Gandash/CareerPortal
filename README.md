@@ -1,4 +1,4 @@
-# 🧳 Career Portal
+#  Career Portal
 
 A full-stack job portal where job seekers can find and apply for jobs, recruiters can post jobs and manage applicants, and admins can oversee the entire platform.
 
@@ -116,18 +116,23 @@ npm run dev
 - Powered by Resend API
 
 ---
+ ## 📸 Screenshots
 
-## 📸 Screenshots
-
-> Add screenshots here
+![Image](https://github.com/user-attachments/assets/14eb4c02-5f13-4789-9930-4cbf21eee9b2)
+![Image](https://github.com/user-attachments/assets/b58d6089-fe4f-4eb2-8c8d-8e7dc1b118a5)
+![Image](https://github.com/user-attachments/assets/d382a7b6-6b15-4dd0-bee2-9e2ce7e1942a)
+![Image](https://github.com/user-attachments/assets/dd163324-0400-47d1-bfb5-af552e2a8a5b)
+![Image](https://github.com/user-attachments/assets/54290b23-54ba-41c8-ada1-03982462b59d)
+![Image](https://github.com/user-attachments/assets/601-height)
+![Image](https://github.com/user-attachments/assets/f193a016-271d-42bd-bd0a-669406dccf22)
 
 ---
 
 ## 🙋‍♂️ Author
 
 **Your Name**
-- GitHub: [@your-username](https://github.com/your-username)
-- LinkedIn: [your-linkedin](https://linkedin.com/in/your-linkedin)
+- GitHub: [@your-username](https://github.com/Dipika-Gandash)
+- LinkedIn: [Dipika](https://www.linkedin.com/in/dipika-411-910318251/)
 
 ---
 
